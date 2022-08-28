@@ -1003,7 +1003,7 @@ txt2img_interface = gr.Interface(
     inputs=[
         gr.Textbox(label="Prompt", placeholder="A corgi wearing a top hat as an oil painting.", lines=1),
         gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=25),
-        gr.Radio(label='Sampling method', choices=[x.name for x in samplers], value=samplers[7].name, type="index"),
+        gr.Radio(label='Sampling method', choices=[x.name for x in samplers], value=samplers[6].name, type="index"),
         gr.Checkbox(label='Fix faces using GFPGAN', value=False, visible=GFPGAN is not None),
         gr.Checkbox(label='Create prompt matrix (separate multiple prompts using |, and get all combinations of them)', value=False),
         gr.Slider(minimum=1, maximum=cmd_opts.max_batch_count, step=1, label='Batch count (how many batches of images to generate)', value=1),
