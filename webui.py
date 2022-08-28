@@ -844,7 +844,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
     output_images = []
     with torch.no_grad(), autocast("cuda"), model.ema_scope():
         p.init()
-            
+
         for n in range(p.n_iter):
             prompts = all_prompts[n * p.batch_size:(n + 1) * p.batch_size]
             seeds = all_seeds[n * p.batch_size:(n + 1) * p.batch_size]
@@ -1002,7 +1002,7 @@ txt2img_interface = gr.Interface(
     wrap_gradio_call(txt2img),
     inputs=[
         gr.Textbox(label="Prompt", placeholder="A corgi wearing a top hat as an oil painting.", lines=1),
-        gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=50),
+        gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=25),
         gr.Radio(label='Sampling method', choices=[x.name for x in samplers], value=samplers[7].name, type="index"),
         gr.Checkbox(label='Fix faces using GFPGAN', value=False, visible=GFPGAN is not None),
         gr.Checkbox(label='Create prompt matrix (separate multiple prompts using |, and get all combinations of them)', value=False),
