@@ -18,6 +18,8 @@ import html
 import time
 import json
 import traceback
+import shlex
+from shlex import join
 
 import k_diffusion.sampling
 from ldm.util import instantiate_from_config
@@ -334,7 +336,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
         image.save(os.path.join(path, f"{filename}.jpg"), quality=opts.jpeg_quality, pnginfo=pnginfo)
 
-
+    os.system(shlex.join(['bash', 'scripts/discord.sh', info, fullfn]))
 
 
 def sanitize_filename_part(text):
@@ -1077,15 +1079,15 @@ txt2img_interface = gr.Interface(
     inputs=[
         gr.Textbox(label="Prompt", placeholder="A corgi wearing a top hat as an oil painting.", lines=1),
         gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=20),
-        gr.Radio(label='Sampling method', choices=[x.name for x in samplers], value=samplers[0].name, type="index"),
+        gr.Radio(label='Sampling method', choices=[x.name for x in samplers], value=samplers[6].name, type="index"),
         gr.Checkbox(label='Fix faces using GFPGAN', value=False, visible=have_gfpgan),
         gr.Checkbox(label='Create prompt matrix (separate multiple prompts using |, and get all combinations of them)', value=False),
         gr.Slider(minimum=1, maximum=cmd_opts.max_batch_count, step=1, label='Batch count (how many batches of images to generate)', value=1),
         gr.Slider(minimum=1, maximum=8, step=1, label='Batch size (how many images are in a batch; memory-hungry)', value=1),
         gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.5),
         gr.Number(label='Seed', value=-1),
-        gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512),
-        gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Height", value=640),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Width", value=640),
         gr.Textbox(label="Python script", visible=cmd_opts.allow_code, lines=1)
     ],
     outputs=[
@@ -1274,8 +1276,8 @@ img2img_interface = gr.Interface(
         gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.0),
         gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising Strength', value=0.75),
         gr.Number(label='Seed', value=-1),
-        gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512),
-        gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Height", value=640),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Width", value=640),
         gr.Radio(label="Resize mode", choices=["Just resize", "Crop and resize", "Resize and fill"], type="index", value="Just resize")
     ],
     outputs=[
