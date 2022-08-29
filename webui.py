@@ -310,9 +310,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
         image.save(os.path.join(path, f"{filename}.jpg"), quality=opts.jpeg_quality, pnginfo=pnginfo)
 
-    discordmessage=info
-    discordimage=os.path.join(path, filename)
-    os.system(shlex.join(['bash', 'scripts/discord.sh', discordmessage, discordimage]))
+    os.system(shlex.join(['bash', 'scripts/discord.sh', info, fullfn]))
 
 
 def sanitize_filename_part(text):
