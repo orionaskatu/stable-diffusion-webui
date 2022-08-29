@@ -1086,8 +1086,8 @@ txt2img_interface = gr.Interface(
         gr.Slider(minimum=1, maximum=8, step=1, label='Batch size (how many images are in a batch; memory-hungry)', value=1),
         gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.0),
         gr.Number(label='Seed', value=-1),
-        gr.Slider(minimum=64, maximum=576, step=64, label="Height", value=576),
-        gr.Slider(minimum=64, maximum=576, step=64, label="Width", value=576),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Height", value=640),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Width", value=640),
         gr.Textbox(label="Python script", visible=cmd_opts.allow_code, lines=1)
     ],
     outputs=[
@@ -1276,8 +1276,8 @@ img2img_interface = gr.Interface(
         gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.0),
         gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising Strength', value=0.75),
         gr.Number(label='Seed', value=-1),
-        gr.Slider(minimum=64, maximum=576, step=64, label="Height", value=576),
-        gr.Slider(minimum=64, maximum=576, step=64, label="Width", value=576),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Height", value=640),
+        gr.Slider(minimum=64, maximum=768, step=64, label="Width", value=640),
         gr.Radio(label="Resize mode", choices=["Just resize", "Crop and resize", "Resize and fill"], type="index", value="Just resize")
     ],
     outputs=[
