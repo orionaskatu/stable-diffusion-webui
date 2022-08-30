@@ -1628,14 +1628,23 @@ settings_interface = gr.Interface(
     analytics_enabled=False,
 )
 
-def ExitWebui(exit):
+def ExitWebui():
     os._exit(0)
 
-with gr.Blocks(analytics_enabled=False) as system_interface:
-    input = gr.Markdown("Stop webui in case of OOM.")
-    output = gr.Markdown()
-    btn = gr.Button("Exit")
-    btn.click(ExitWebui, input, output)
+def Readlog():
+    logfile = open('~/nohup.out', 'r')
+    logdata = logfile.read()
+    logfile.close()
+    return logdata
+
+system_interface = gr.Blocks()
+
+with system_interface:
+    output = gr.Textbox()
+    logbtn = gr.Button("Refresh Log")
+    logbtn.click(Readlog, [], output)
+    exitbtn = gr.Button("Restart WebUI")
+    exitbtn.click(ExitWebui, [], [])
 
 interfaces = [
     (txt2img_interface, "txt2img"),
