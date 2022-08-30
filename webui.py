@@ -1518,12 +1518,24 @@ settings_interface = gr.Interface(
     allow_flagging="never",
 )
 
+def ExitWebui(exit):
+    os._exit(0)
+
+system_interface = gr.Blocks()
+
+with system_interface:
+    input = gr.Markdown("Stop webui in case of OOM.")
+    output = gr.Markdown()
+    btn = gr.Button("Exit")
+    btn.click(ExitWebui, input, output)
+
 interfaces = [
     (txt2img_interface, "txt2img"),
     (img2img_interface, "img2img"),
     (extras_interface, "Extras"),
     (pnginfo_interface, "PNG Info"),
     (settings_interface, "Settings"),
+    (system_interface, "System"),
 ]
 
 sd_config = OmegaConf.load(cmd_opts.config)
