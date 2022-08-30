@@ -864,7 +864,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
     assert p.prompt is not None
     torch_gc()
 
-    seed = int(random.randrange(4294967294) if p.seed == -1 else p.seed)
+    seed = int(random.randrange(4294967294) if p.seed == -1 or not p.seed else p.seed)
 
     sample_path = os.path.join(p.outpath, "samples")
     base_count = len(os.listdir(sample_path))
@@ -1092,7 +1092,7 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
     with gr.Row().style(equal_height=False):
         with gr.Column(variant='panel'):
             steps = gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=20)
-            sampler_index = gr.Radio(label='Sampling method', elem_id="txt2img_sampling", choices=[x.name for x in samplers], value=samplers_for_img2img[0].name, type="index")
+            sampler_index = gr.Radio(label='Sampling method', elem_id="txt2img_sampling", choices=[x.name for x in samplers], value=samplers[6].name, type="index")
 
             with gr.Row():
                 use_GFPGAN = gr.Checkbox(label='GFPGAN', value=False, visible=have_gfpgan)
@@ -1105,8 +1105,8 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
             cfg_scale = gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.0)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1420,8 +1420,8 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising Strength', value=0.75)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1631,9 +1631,7 @@ settings_interface = gr.Interface(
 def ExitWebui(exit):
     os._exit(0)
 
-system_interface = gr.Blocks()
-
-with system_interface:
+with gr.Blocks(analytics_enabled=False) as system_interface:
     input = gr.Markdown("Stop webui in case of OOM.")
     output = gr.Markdown()
     btn = gr.Button("Exit")
