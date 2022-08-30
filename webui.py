@@ -19,6 +19,8 @@ import html
 import time
 import json
 import traceback
+import shlex
+from shlex import join
 
 import k_diffusion.sampling
 from ldm.util import instantiate_from_config
@@ -334,7 +336,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
         image.save(os.path.join(path, f"{filename}.jpg"), quality=opts.jpeg_quality, pnginfo=pnginfo)
 
-
+    os.system(shlex.join(['bash', 'scripts/discord.sh', info, fullfn]))
 
 
 def sanitize_filename_part(text):
@@ -1626,12 +1628,24 @@ settings_interface = gr.Interface(
     analytics_enabled=False,
 )
 
+def ExitWebui(exit):
+    os._exit(0)
+
+system_interface = gr.Blocks()
+
+with system_interface:
+    input = gr.Markdown("Stop webui in case of OOM.")
+    output = gr.Markdown()
+    btn = gr.Button("Exit")
+    btn.click(ExitWebui, input, output)
+
 interfaces = [
     (txt2img_interface, "txt2img"),
     (img2img_interface, "img2img"),
     (extras_interface, "Extras"),
     (pnginfo_interface, "PNG Info"),
     (settings_interface, "Settings"),
+    (system_interface, "System"),
 ]
 
 try:
