@@ -7,7 +7,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 sd_path = os.path.dirname(script_path)
 
 # add parent directory to path; this is where Stable diffusion repo should be
-path_dirs = [(sd_path, 'ldm', 'Stable Diffusion'), ('../../taming-transformers', 'taming', 'Taming Transformers')]
+path_dirs = [(sd_path, 'ldm', 'Stable Diffusion'), ('../src/taming-transformers', 'taming', 'Taming Transformers')]
 for d, must_exist, what in path_dirs:
     must_exist_path = os.path.abspath(os.path.join(script_path, d, must_exist))
     if not os.path.exists(must_exist_path):
@@ -1233,7 +1233,8 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**txt2img_args)
@@ -1636,7 +1637,8 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**img2img_args)
@@ -1800,7 +1802,7 @@ def Nvidiasmi():
     return nvidia_smi
 
 with gr.Blocks(analytics_enabled=False) as system_interface:
-    with gr.Row():
+    with gr.Row().style(equal_height=False):
         with gr.Column():
             logfile_out = gr.Textbox(label="Logfile", lines=20)
             logfile_btn = gr.Button("Refresh Log")
@@ -1809,8 +1811,9 @@ with gr.Blocks(analytics_enabled=False) as system_interface:
             nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
             nvidia_smi_btn = gr.Button("Nvidia-smi")
             nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out)
-    exit_btn = gr.Button("Restart WebUI", variant="primary")
-    exit_btn.click(ExitWebui, [], [])
+    with gr.Row():
+        exit_btn = gr.Button("Restart WebUI", variant="primary")
+        exit_btn.click(ExitWebui, [], [])
 
 interfaces = [
     (txt2img_interface, "txt2img"),
