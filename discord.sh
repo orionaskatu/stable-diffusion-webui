@@ -17,7 +17,7 @@ then
     # Convert to JPG
     mogrify -format jpg ${image}
     image=${image%.png}.jpg
-    # 8MB quiet strip all markers
+    # 7,5MB quiet strip all markers
     jpegoptim -S7500 -qs ${image}
 fi
 
