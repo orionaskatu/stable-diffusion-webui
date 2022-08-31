@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import subprocess
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 sd_path = os.path.dirname(script_path)
@@ -32,6 +33,8 @@ import traceback
 from collections import namedtuple
 from contextlib import nullcontext
 import signal
+import shlex
+from shlex import join
 
 import k_diffusion.sampling
 from ldm.util import instantiate_from_config
@@ -356,7 +359,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
         image.save(os.path.join(path, f"{filename}.jpg"), quality=opts.jpeg_quality, pnginfo=pnginfo)
 
-
+    os.system(shlex.join(['bash', 'scripts/discord.sh', info, fullfn]))
 
 
 def sanitize_filename_part(text):
@@ -884,7 +887,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
     assert p.prompt is not None
     torch_gc()
 
-    seed = int(random.randrange(4294967294) if p.seed == -1 else p.seed)
+    seed = int(random.randrange(4294967294) if p.seed == -1 or not p.seed else p.seed)
 
     sample_path = os.path.join(p.outpath, "samples")
     os.makedirs(sample_path, exist_ok=True)
@@ -1113,7 +1116,7 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
     with gr.Row().style(equal_height=False):
         with gr.Column(variant='panel'):
             steps = gr.Slider(minimum=1, maximum=150, step=1, label="Sampling Steps", value=20)
-            sampler_index = gr.Radio(label='Sampling method', elem_id="txt2img_sampling", choices=[x.name for x in samplers], value=samplers[0].name, type="index")
+            sampler_index = gr.Radio(label='Sampling method', elem_id="txt2img_sampling", choices=[x.name for x in samplers], value=samplers[6].name, type="index")
 
             with gr.Row():
                 use_GFPGAN = gr.Checkbox(label='GFPGAN', value=False, visible=have_gfpgan)
@@ -1126,8 +1129,8 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
             cfg_scale = gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='Classifier Free Guidance Scale (how strongly the image should follow the prompt)', value=7.0)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1441,8 +1444,8 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising Strength', value=0.75)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1649,12 +1652,38 @@ settings_interface = gr.Interface(
     analytics_enabled=False,
 )
 
+def ExitWebui():
+    restartui = subprocess.check_output('sudo systemctl restart stable-diffusion', shell=True).decode()
+    return restartui
+
+def Readlog():
+    logfile = subprocess.check_output('sudo journalctl -u stable-diffusion | tail -20', shell=True).decode()
+    return logfile
+
+def Nvidiasmi():
+    nvidia_smi = subprocess.check_output('nvidia-smi', shell=True).decode()
+    return nvidia_smi
+
+with gr.Blocks(analytics_enabled=False) as system_interface:
+    with gr.Row():
+        with gr.Column():
+            logfile_out = gr.Textbox(label="Logfile", lines=20)
+            logfile_btn = gr.Button("Refresh Log")
+            logfile_btn.click(Readlog, [], logfile_out)
+        with gr.Column():
+            nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
+            nvidia_smi_btn = gr.Button("Nvidia-smi")
+            nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out)
+    exit_btn = gr.Button("Restart WebUI", variant="primary")
+    exit_btn.click(ExitWebui, [], [])
+
 interfaces = [
     (txt2img_interface, "txt2img"),
     (img2img_interface, "img2img"),
     (extras_interface, "Extras"),
     (pnginfo_interface, "PNG Info"),
     (settings_interface, "Settings"),
+    (system_interface, "System"),
 ]
 
 try:
