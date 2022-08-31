@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import subprocess
 from collections import namedtuple
 from contextlib import nullcontext
 
@@ -1629,22 +1630,29 @@ settings_interface = gr.Interface(
 )
 
 def ExitWebui():
-    os._exit(0)
+    restartui = subprocess.check_output('sudo systemctl restart stable-diffusion', shell=True).decode()
+    return restartui
 
 def Readlog():
-    logfile = open('~/nohup.out', 'r')
-    logdata = logfile.read()
-    logfile.close()
-    return logdata
+    logfile = subprocess.check_output('sudo journalctl -u stable-diffusion | tail -20', shell=True).decode()
+    return logfile
 
-system_interface = gr.Blocks()
+def Nvidiasmi():
+    nvidia_smi = subprocess.check_output('nvidia-smi', shell=True).decode()
+    return nvidia_smi
 
-with system_interface:
-    output = gr.Textbox()
-    logbtn = gr.Button("Refresh Log")
-    logbtn.click(Readlog, [], output)
-    exitbtn = gr.Button("Restart WebUI")
-    exitbtn.click(ExitWebui, [], [])
+with gr.Blocks(analytics_enabled=False) as system_interface:
+    with gr.Row():
+        with gr.Column():
+            logfile_out = gr.Textbox(label="Logfile", lines=20)
+            logfile_btn = gr.Button("Refresh Log")
+            logfile_btn.click(Readlog, [], logfile_out)
+        with gr.Column():
+            nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
+            nvidia_smi_btn = gr.Button("Nvidia-smi")
+            nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out)
+    exit_btn = gr.Button("Restart WebUI", variant="primary")
+    exit_btn.click(ExitWebui, [], [])
 
 interfaces = [
     (txt2img_interface, "txt2img"),
