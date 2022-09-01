@@ -3,7 +3,7 @@
 #apt -y install curl jo jpegoptim
 
 # Discord webhook url
-url="https://discord.com/api/webhooks/XXX/XXX"
+url=$(cat discordurl.txt)
 # Bot username that will send the message
 username="stable-diffusion"
 # Create json structure
