@@ -1339,7 +1339,7 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
 
             with gr.Group():
                 html_info = gr.HTML()
-                generation_info = gr.Textbox(visible=False)
+                generation_info = gr.Textbox()
 
         txt2img_args = dict(
             fn=wrap_gradio_gpu_call(txt2img),
@@ -1730,7 +1730,7 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
 
             with gr.Group():
                 html_info = gr.HTML()
-                generation_info = gr.Textbox(visible=False)
+                generation_info = gr.Textbox()
 
         def apply_mode(mode):
             is_classic = mode == 0
