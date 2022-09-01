@@ -26,7 +26,7 @@ username   ALL=(ALL) NOPASSWD: ALL
 A bash script `start.sh` that:
  - Activates `ldm` conda env
  - Launches a reverse proxy on port 80 to easily access the webui from the local network
- - Launches `relauncher.py` (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
+ - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --allow-code`
 
 A System tab with buttons to:
  - Read the last 20 lines of `journalctl -u stable-diffusion`
@@ -40,9 +40,6 @@ It converts and compress to jpg if file too big for Discord.
 
 Put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
 `https://discord.com/api/webhooks/xxx/xxx`
-
-The webui is launched with these params:
-`--no-progressbar-hiding --max-batch-count 30 --lowvram --allow-code`
 
 I also modified some default configs in `webui.py`:
  - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
@@ -74,8 +71,7 @@ WantedBy=multi-user.target
  ## TODO
 
  Next planned features:
-  - Use the systemd service with `Restart=always` and remove `relauncher.py`
-  - Possibility to send txt2img output to img2img input
+  - Send txt2img output to img2img input
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
