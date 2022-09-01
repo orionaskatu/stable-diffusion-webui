@@ -2,9 +2,9 @@
 
 **It is NOT SAFE to expose this implementation of the Web UI outside your local network (mainly because of passwordless sudo).**
 
-Tested on Debian 11 (Bullseye), it needs adjustments on other OSes (especially Windows).
+**I'm not a developer and my code is far from good, so you WILL encounter bugs.**
 
-I'm not a developer and my code is far from good, so you WILL encounter bugs.
+Tested on Debian 11 (Bullseye), it needs adjustments on other OSes (especially Windows).
 
 I use conda to manage the python env (comment the first lines of `start.sh` if you don't use it):
 
