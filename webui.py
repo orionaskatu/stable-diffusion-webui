@@ -2089,4 +2089,5 @@ def inject_gradio_html(javascript):
 
 inject_gradio_html(javascript)
 
+demo.queue(concurrency_count=1)
 demo.launch(share=cmd_opts.share)
