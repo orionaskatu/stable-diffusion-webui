@@ -1362,11 +1362,12 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
                 gallery,
                 generation_info,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**txt2img_args)
-        submit.click(**txt2img_args, scroll_to_output=True)
+        submit.click(**txt2img_args)
 
         interrupt.click(
             fn=lambda: state.interrupt(),
@@ -1796,11 +1797,12 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 gallery,
                 generation_info,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**img2img_args)
-        submit.click(**img2img_args, scroll_to_output=True)
+        submit.click(**img2img_args)
 
         interrupt.click(
             fn=lambda: state.interrupt(),
