@@ -1840,7 +1840,7 @@ settings_interface = gr.Interface(
 )
 
 def Readlog():
-    logfile = subprocess.check_output('journalctl -u stable-diffusion | tail -20', shell=True).decode()
+    logfile = subprocess.check_output('journalctl -q -u stable-diffusion | tail -20', shell=True).decode()
     return logfile
 
 def Nvidiasmi():
@@ -1848,11 +1848,11 @@ def Nvidiasmi():
     return nvidia_smi
 
 def PurgeOutputs():
-    purge_outputs = subprocess.run('rm -rf outputs/*')
+    purge_outputs = os.system('rm -rf outputs/*')
     return purge_outputs
 
 def ExitWebui():
-    restartui = subprocess.run('sudo systemctl restart stable-diffusion')
+    restartui = os.system('sudo systemctl restart stable-diffusion')
     return restartui
 
 with gr.Blocks(analytics_enabled=False) as system_interface:
