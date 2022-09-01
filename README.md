@@ -1,3 +1,80 @@
+# Prequisites
+
+Tested on Debian 11 (Bullseye), it may need adjustments on other OSes.
+
+Keep in mind that you may encounter bugs as I'm not a developer and my code is far from good.
+
+I use conda to manage the python env (comment the first lines of `start.sh` if you don't use it):
+
+`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
+
+Packages needed :
+```commandline
+apt -y install curl jo jpegoptim mitmproxy
+```
+
+## Features
+
+A bash script `start.sh` that:
+ - Activates `ldm` conda env
+ - Launches a reverse proxy on port 80 to easily access the webui from the local network
+ - Launches `relauncher.py` (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
+
+A System tab with the ability to:
+ - Read the last 20 lines of `journalctl -u stable-diffusion`
+ - Print `nvidia-smi` output
+ - Restart Web UI button (useful in case of OOM)
+
+A bash script `discord.sh` to send infos + images to discord via webhook.
+
+It converts and compress to jpg if file too big for Discord.
+
+Put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
+`https://discord.com/api/webhooks/xxx/xxx`
+
+The webui is launched with these params:
+`--no-progressbar-hiding --max-batch-count 30 --lowvram --allow-code`
+
+I also modified some default configs in `webui.py`:
+ - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
+ - If seed is empty it acts like `seed = -1` (random seed)
+ - taming-transformers is in `stable-diffusion/src/` subdirectory
+ - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage - doesn't seem to work for the time being)
+
+
+I use a simple systemd service like this one:
+
+```commandline
+[Unit]
+Description=Stable-Diffusion
+After=network-online.target
+
+[Service]
+Type=simple
+
+User=username
+Group=groupname
+ExecStart=/home/username/stable-diffusion/stable-diffusion-webui/start.sh
+WorkingDirectory=/home/username/stable-diffusion/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+ ## TODO
+
+ Next planned features:
+  - A button to purge output directory (useful from time to time)
+  - Use the systemd service with `Restart=always` and remove `relauncher.py`
+  - Possibility to send txt2img output to img2img input
+
+
+↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
+--------------
+--------------
+
+
 # Stable Diffusion web UI
 A browser interface based on Gradio library for Stable Diffusion.
 
