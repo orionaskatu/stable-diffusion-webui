@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+import subprocess
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 sd_path = os.path.dirname(script_path)
@@ -8,7 +9,7 @@ sd_path = os.path.dirname(script_path)
 # add parent directory to path; this is where Stable diffusion repo should be
 path_dirs = [
     (sd_path, 'ldm', 'Stable Diffusion'),
-    ('../../taming-transformers', 'taming', 'Taming Transformers')
+    ('../src/taming-transformers', 'taming', 'Taming Transformers')
 ]
 for d, must_exist, what in path_dirs:
     must_exist_path = os.path.abspath(os.path.join(script_path, d, must_exist))
@@ -38,6 +39,8 @@ import signal
 import tqdm
 import re
 import threading
+import shlex
+from shlex import join
 
 import k_diffusion.sampling
 from ldm.util import instantiate_from_config
@@ -399,7 +402,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
         image.save(f"{fullfn_without_extension}.jpg", quality=opts.jpeg_quality, pnginfo=pnginfo)
 
-
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', info, fullfn]))
 
 
 def sanitize_filename_part(text):
@@ -1007,7 +1010,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
     assert p.prompt is not None
     torch_gc()
 
-    seed = int(random.randrange(4294967294) if p.seed == -1 else p.seed)
+    seed = int(random.randrange(4294967294) if p.seed == -1 or not p.seed else p.seed)
 
     os.makedirs(p.outpath_samples, exist_ok=True)
     os.makedirs(p.outpath_grids, exist_ok=True)
@@ -1257,8 +1260,8 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
             cfg_scale = gr.Slider(minimum=1.0, maximum=15.0, step=0.5, label='CFG Scale', value=7.0)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1291,7 +1294,8 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**txt2img_args)
@@ -1621,8 +1625,8 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 denoising_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.01, label='Denoising Strength', value=0.75)
 
             with gr.Group():
-                height = gr.Slider(minimum=64, maximum=2048, step=64, label="Height", value=512)
-                width = gr.Slider(minimum=64, maximum=2048, step=64, label="Width", value=512)
+                height = gr.Slider(minimum=192, maximum=2112, step=64, label="Height", value=640)
+                width = gr.Slider(minimum=192, maximum=2112, step=64, label="Width", value=640)
 
             seed = gr.Number(label='Seed', value=-1)
 
@@ -1697,7 +1701,8 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ]
+            ],
+            scroll_to_output=True
         )
 
         prompt.submit(**img2img_args)
@@ -1846,12 +1851,47 @@ settings_interface = gr.Interface(
     analytics_enabled=False,
 )
 
+def Readlog():
+    logfile = subprocess.check_output('journalctl -q -u stable-diffusion | tail -20', shell=True).decode()
+    return logfile
+
+def Nvidiasmi():
+    nvidia_smi = subprocess.check_output('nvidia-smi', shell=True).decode()
+    return nvidia_smi
+
+def PurgeOutputs():
+    purge_outputs = os.system('rm -rf outputs/*')
+    return purge_outputs
+
+def ExitWebui():
+    restartui = os.system('sudo systemctl restart stable-diffusion')
+    return restartui
+
+with gr.Blocks(analytics_enabled=False) as system_interface:
+    with gr.Row().style(equal_height=False):
+        with gr.Column():
+            logfile_out = gr.Textbox(label="Logfile", lines=20)
+            logfile_btn = gr.Button("Refresh Log")
+            logfile_btn.click(Readlog, [], logfile_out, queue=False)
+        with gr.Column():
+            nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
+            nvidia_smi_btn = gr.Button("Nvidia-smi")
+            nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out, queue=False)
+    with gr.Row():
+        with gr.Column():
+            purge_btn = gr.Button("Purge Outputs Directory", variant="primary")
+            purge_btn.click(PurgeOutputs, [], [])
+        with gr.Column():
+            exit_btn = gr.Button("Restart WebUI", variant="primary")
+            exit_btn.click(ExitWebui, [], [])
+
 interfaces = [
     (txt2img_interface, "txt2img"),
     (img2img_interface, "img2img"),
     (extras_interface, "Extras"),
     (pnginfo_interface, "PNG Info"),
     (settings_interface, "Settings"),
+    (system_interface, "System"),
 ]
 
 try:
@@ -1917,4 +1957,3 @@ def inject_gradio_html(javascript):
 inject_gradio_html(javascript)
 
 demo.launch(share=cmd_opts.share)
-
