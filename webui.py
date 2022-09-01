@@ -1294,12 +1294,11 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ],
-            scroll_to_output=True
+            ]
         )
 
         prompt.submit(**txt2img_args)
-        submit.click(**txt2img_args)
+        submit.click(**txt2img_args, scroll_to_output=True)
 
 
 def get_crop_region(mask, pad=0):
@@ -1701,12 +1700,11 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
                 gallery,
                 output_seed,
                 html_info
-            ],
-            scroll_to_output=True
+            ]
         )
 
         prompt.submit(**img2img_args)
-        submit.click(**img2img_args)
+        submit.click(**img2img_args, scroll_to_output=True)
 
 
 def upscale_with_realesrgan(image, RealESRGAN_upscaling, RealESRGAN_model_index):

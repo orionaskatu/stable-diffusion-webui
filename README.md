@@ -1,8 +1,10 @@
 # Prequisites
 
-Tested on Debian 11 (Bullseye), it may need adjustments on other OSes.
+**It is NOT SAFE to expose this implementation of the Web UI outside your local network (mainly because of passwordless sudo).**
 
-Keep in mind that you may encounter bugs as I'm not a developer and my code is far from good.
+Tested on Debian 11 (Bullseye), it needs adjustments on other OSes (especially Windows).
+
+I'm not a developer and my code is far from good, so you WILL encounter bugs.
 
 I use conda to manage the python env (comment the first lines of `start.sh` if you don't use it):
 
@@ -45,7 +47,7 @@ I also modified some default configs in `webui.py`:
  - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
  - If seed is empty it acts like `seed = -1` (random seed)
  - taming-transformers is in `stable-diffusion/src/` subdirectory
- - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage - doesn't seem to work for the time being)
+ - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
 
 
 I use a simple systemd service like this one (in `etc/systemd/system/stable-diffusion.service`):
@@ -75,8 +77,9 @@ WantedBy=multi-user.target
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
---------------
---------------
+
+---
+---
 
 
 # Stable Diffusion web UI
