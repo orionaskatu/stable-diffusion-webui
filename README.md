@@ -1,3 +1,43 @@
+# Additions to the original Webui
+
+Tested on Debian 11 (Bullseye), it may need adjustments on other OSes.
+
+Keep in mind that you may encounter bugs as I'm not a developer and my code is far from good.
+
+Packages needed :
+- conda
+- curl
+- jo
+- jpegoptim
+- mitmproxy
+
+## Features
+
+A start.sh script that :
+	- Activates `ldm` conda env
+	- Launches a reverse proxy on port 80 to easily access the webui from the local network
+	- Launches relauncher.py (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
+
+A System tab with the ability to :
+ - Read the last 20 lines of journalctl -u stable-diffusion
+ - Print nvidia-smi output
+ - Restart Web UI button (useful in case of OOM)
+
+A bash script (discord.sh) to send infos + images to discord via webhook.
+It converts and compress to jpg if file too big for Discord.
+You need this packages installed : `curl jo jpegoptim`
+Put your Discord webhook url to a discordurl.txt file :
+```commandline
+https://discord.com/api/webhooks/xxx/xxx
+```
+
+The webui is launched with these params : `--no-progressbar-hiding --max-batch-count 30 --lowvram --allow-code`
+
+I also modified some default configs :
+ - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
+ - If seed is empty it acts like `seed = -1`
+
+
 # Stable Diffusion web UI
 A browser interface based on Gradio library for Stable Diffusion.
 
