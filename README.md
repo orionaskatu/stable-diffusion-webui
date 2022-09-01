@@ -1,15 +1,20 @@
-# Additions to the original Webui
+# Prequisites
 
 Tested on Debian 11 (Bullseye), it may need adjustments on other OSes.
 
 Keep in mind that you may encounter bugs as I'm not a developer and my code is far from good.
 
 Packages needed :
-- conda
-- curl
-- jo
-- jpegoptim
-- mitmproxy
+```commandline
+conda
+curl
+jo
+jpegoptim
+mitmproxy
+```
+
+`apt install curl jo jpegoptim mitmproxy`
+`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
 
 ## Features
 
@@ -71,7 +76,8 @@ WantedBy=multi-user.target
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
- --------------
+--------------
+--------------
 
 
 # Stable Diffusion web UI
