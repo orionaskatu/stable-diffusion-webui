@@ -232,6 +232,7 @@ class Options:
         "enable_pnginfo": OptionInfo(True, "Save text information about generation parameters as chunks to png files"),
         "font": OptionInfo("arial.ttf", "Font for image grids  that have text"),
         "prompt_matrix_add_to_start": OptionInfo(True, "In prompt matrix, add the variable combination of text to the start of the prompt, rather than the end"),
+        "enable_emphasis": OptionInfo(True, "Use (text) to make model pay more attention to text text and [text] to make it pay less attention")
     }
 
     def __init__(self):
@@ -688,7 +689,7 @@ def wrap_gradio_call(func):
             print("Arguments:", args, kwargs, file=sys.stderr)
             print(traceback.format_exc(), file=sys.stderr)
 
-            res = [None, f"<div class='error'>{plaintext_to_html(type(e).__name__+': '+str(e))}</div>"]
+            res = [None, '', f"<div class='error'>{plaintext_to_html(type(e).__name__+': '+str(e))}</div>"]
 
         elapsed = time.perf_counter() - t
 
@@ -707,7 +708,7 @@ class StableDiffusionModelHijack:
     word_embeddings = {}
     word_embeddings_checksums = {}
     fixes = None
-    comments = None
+    comments = []
     dir_mtime = None
 
     def load_textual_inversion_embeddings(self, dirname, model):
@@ -815,7 +816,7 @@ class FrozenCLIPEmbedderWithCustomWords(torch.nn.Module):
 
                     possible_matches = self.hijack.ids_lookup.get(token, None)
 
-                    mult_change = self.token_mults.get(token)
+                    mult_change = self.token_mults.get(token) if opts.enable_emphasis else None
                     if mult_change is not None:
                         mult *= mult_change
                     elif possible_matches is None:
@@ -1031,6 +1032,18 @@ class KDiffusionSampler:
 
         if hasattr(k_diffusion.sampling, 'trange'):
             k_diffusion.sampling.trange = lambda *args, **kwargs: extended_trange(*args, **kwargs)
+
+        def cb(d):
+            n = d['i']
+            img = d['denoised']
+
+            x_samples_ddim = sd_model.decode_first_stage(img)
+            x_samples_ddim = torch.clamp((x_samples_ddim + 1.0) / 2.0, min=0.0, max=1.0)
+            for i, x_sample in enumerate(x_samples_ddim):
+                x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
+                x_sample = x_sample.astype(np.uint8)
+                image = Image.fromarray(x_sample)
+                image.save(f'a/{n}.png')
 
         samples_ddim = self.func(self.model_wrap_cfg, x, sigmas, extra_args={'cond': conditioning, 'uncond': unconditional_conditioning, 'cond_scale': p.cfg_scale}, disable=False)
         return samples_ddim
@@ -1606,7 +1619,7 @@ def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index
                 initial_seed = processed.seed
                 initial_info = processed.info
 
-            p.init_img = processed.images[0]
+            p.init_images = [processed.images[0]]
             p.seed = processed.seed + 1
             p.denoising_strength = max(p.denoising_strength * 0.95, 0.1)
             history.append(processed.images[0])
