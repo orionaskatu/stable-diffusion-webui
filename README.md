@@ -47,7 +47,7 @@ I also modified some default configs in `webui.py`:
  - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
  - If seed is empty it acts like `seed = -1` (random seed)
  - taming-transformers is in `stable-diffusion/src/` subdirectory
- - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
+ - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens - doesn't work actually)
 
 
 I use a simple systemd service like this one (in `etc/systemd/system/stable-diffusion.service`):
@@ -73,6 +73,7 @@ WantedBy=multi-user.target
  ## TODO
 
  Next planned features:
+  - Find why scroll_to_output on Generate buttons does not work
   - Send txt2img output to img2img input
 
 
