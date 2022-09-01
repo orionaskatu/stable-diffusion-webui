@@ -8,4 +8,4 @@ cd /mnt/nas/stable-diffusion/
 # mitmproxy package needed
 sudo mitmdump -q --listen-port 80 --mode reverse:http://127.0.0.1:7860/ &
 # Auto relauncher
-python scripts/relauncher.py
+python stable-diffusion-webui/relauncher.py
