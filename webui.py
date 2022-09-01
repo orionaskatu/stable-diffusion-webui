@@ -1819,10 +1819,6 @@ settings_interface = gr.Interface(
     analytics_enabled=False,
 )
 
-def ExitWebui():
-    restartui = subprocess.check_output('sudo systemctl restart stable-diffusion', shell=True).decode()
-    return restartui
-
 def Readlog():
     logfile = subprocess.check_output('sudo journalctl -u stable-diffusion | tail -20', shell=True).decode()
     return logfile
@@ -1830,6 +1826,14 @@ def Readlog():
 def Nvidiasmi():
     nvidia_smi = subprocess.check_output('nvidia-smi', shell=True).decode()
     return nvidia_smi
+
+def PurgeOutputs():
+    purge_outputs = subprocess.check_output('rm -rf outputs/*', shell=True).decode()
+    return purge_outputs
+
+def ExitWebui():
+    restartui = subprocess.check_output('sudo systemctl restart stable-diffusion', shell=True).decode()
+    return restartui
 
 with gr.Blocks(analytics_enabled=False) as system_interface:
     with gr.Row().style(equal_height=False):
@@ -1842,8 +1846,12 @@ with gr.Blocks(analytics_enabled=False) as system_interface:
             nvidia_smi_btn = gr.Button("Nvidia-smi")
             nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out, queue=False)
     with gr.Row():
-        exit_btn = gr.Button("Restart WebUI", variant="primary")
-        exit_btn.click(ExitWebui, [], [])
+        with gr.Column():
+            purge_btn = gr.Button("Purge Outputs Directory", variant="primary")
+            purge_btn.click(PurgeOutputs, [], [])
+        with gr.Column():
+            exit_btn = gr.Button("Restart WebUI", variant="primary")
+            exit_btn.click(ExitWebui, [], [])
 
 interfaces = [
     (txt2img_interface, "txt2img"),

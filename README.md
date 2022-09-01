@@ -13,6 +13,14 @@ Packages needed :
 apt -y install curl jo jpegoptim mitmproxy
 ```
 
+Replace occurences of `username` by your username.
+
+
+To bind the reverse proxy on port 80 you need to be able to sudo without password (in `/etc/sudoers.d/username`):
+```commmandline
+username   ALL=(ALL) NOPASSWD: ALL
+```
+
 ## Features
 
 A bash script `start.sh` that:
@@ -20,10 +28,11 @@ A bash script `start.sh` that:
  - Launches a reverse proxy on port 80 to easily access the webui from the local network
  - Launches `relauncher.py` (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
 
-A System tab with the ability to:
+A System tab with buttons to:
  - Read the last 20 lines of `journalctl -u stable-diffusion`
  - Print `nvidia-smi` output
- - Restart Web UI button (useful in case of OOM)
+ - Purge `outputs` directory
+ - Restart the Web UI (useful in case of OOM)
 
 A bash script `discord.sh` to send infos + images to discord via webhook.
 
@@ -42,7 +51,7 @@ I also modified some default configs in `webui.py`:
  - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage - doesn't seem to work for the time being)
 
 
-I use a simple systemd service like this one:
+I use a simple systemd service like this one (in `etc/systemd/system/stable-diffusion.service`):
 
 ```commandline
 [Unit]
@@ -65,7 +74,6 @@ WantedBy=multi-user.target
  ## TODO
 
  Next planned features:
-  - A button to purge output directory (useful from time to time)
   - Use the systemd service with `Restart=always` and remove `relauncher.py`
   - Possibility to send txt2img output to img2img input
 
