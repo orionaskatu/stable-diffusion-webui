@@ -14,9 +14,9 @@ Packages needed :
 ## Features
 
 A start.sh script that :
-	- Activates `ldm` conda env
-	- Launches a reverse proxy on port 80 to easily access the webui from the local network
-	- Launches relauncher.py (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
+ - Activates `ldm` conda env
+ - Launches a reverse proxy on port 80 to easily access the webui from the local network
+ - Launches relauncher.py (credits to https://github.com/hlky/stable-diffusion-webui) to restart without ssh'ing
 
 A System tab with the ability to :
  - Read the last 20 lines of journalctl -u stable-diffusion
