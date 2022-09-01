@@ -1828,11 +1828,11 @@ with gr.Blocks(analytics_enabled=False) as system_interface:
         with gr.Column():
             logfile_out = gr.Textbox(label="Logfile", lines=20)
             logfile_btn = gr.Button("Refresh Log")
-            logfile_btn.click(Readlog, [], logfile_out)
+            logfile_btn.click(Readlog, [], logfile_out, queue=False)
         with gr.Column():
             nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
             nvidia_smi_btn = gr.Button("Nvidia-smi")
-            nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out)
+            nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out, queue=False)
     with gr.Row():
         exit_btn = gr.Button("Restart WebUI", variant="primary")
         exit_btn.click(ExitWebui, [], [])
