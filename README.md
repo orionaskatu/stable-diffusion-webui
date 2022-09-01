@@ -4,17 +4,13 @@ Tested on Debian 11 (Bullseye), it may need adjustments on other OSes.
 
 Keep in mind that you may encounter bugs as I'm not a developer and my code is far from good.
 
+I use conda to manage the python env :
+`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
+
 Packages needed :
 ```commandline
-conda
-curl
-jo
-jpegoptim
-mitmproxy
+apt -y install curl jo jpegoptim mitmproxy
 ```
-
-`apt install curl jo jpegoptim mitmproxy`
-`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
 
 ## Features
 
@@ -32,10 +28,8 @@ A bash script `discord.sh` to send infos + images to discord via webhook.
 
 It converts and compress to jpg if file too big for Discord.
 
-Put your Discord webhook url in a `discordurl.txt` file :
-```commandline
-https://discord.com/api/webhooks/xxx/xxx
-```
+Put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
+`https://discord.com/api/webhooks/xxx/xxx`
 
 The webui is launched with these params :
 `--no-progressbar-hiding --max-batch-count 30 --lowvram --allow-code`
