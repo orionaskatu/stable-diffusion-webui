@@ -57,6 +57,7 @@ printf ${delimiter}
 printf "Clone basujindal's optimized stable-diffusion fork"
 printf ${delimiter}
 git clone https://github.com/basujindal/stable-diffusion.git
+cd stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
 
 printf ${delimiter}
 printf "Clone stable-diffusion-webui"
@@ -76,10 +77,10 @@ then
 fi
 source ~/.bashrc
 
-
 printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
+conda init bash
 conda update -y -n base -c defaults conda
 conda env create -f stable-diffusion/environment.yaml
 conda activate ldm
@@ -90,6 +91,7 @@ printf ${delimiter}
 pip install git+https://github.com/crowsonkb/k-diffusion.git
 pip install git+https://github.com/TencentARC/GFPGAN.git
 pip install git+https://github.com/CompVis/taming-transformers.git
+git clone https://github.com/CompVis/taming-transformers.git 
 pip install -r stable-diffusion-webui/requirements_versions.txt
 
 printf ${delimiter}
@@ -130,5 +132,5 @@ sudo systemctl daemon-reload
 sudo systemctl enable stable-diffusion
 
 printf ${delimiter}
-printf "Installation finished successfully!"
+printf "Installation successful!"
 printf ${delimiter}
