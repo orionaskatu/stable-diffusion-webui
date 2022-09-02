@@ -1356,7 +1356,6 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
 
             with gr.Group():
                 html_info = gr.HTML()
-                generation_info = gr.Textbox()
 
         txt2img_args = dict(
             fn=wrap_gradio_gpu_call(txt2img),
@@ -1377,7 +1376,6 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
             ],
             outputs=[
                 gallery,
-                generation_info,
                 html_info
             ],
             scroll_to_output=True
@@ -1395,7 +1393,7 @@ with gr.Blocks(analytics_enabled=False) as txt2img_interface:
         save.click(
             fn=wrap_gradio_call(save_files),
             inputs=[
-                generation_info,
+                html_info,
                 gallery,
             ],
             outputs=[
@@ -1747,7 +1745,6 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
 
             with gr.Group():
                 html_info = gr.HTML()
-                generation_info = gr.Textbox()
 
         def apply_mode(mode):
             is_classic = mode == 0
@@ -1812,7 +1809,6 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
             ],
             outputs=[
                 gallery,
-                generation_info,
                 html_info
             ],
             scroll_to_output=True
@@ -1830,7 +1826,7 @@ with gr.Blocks(analytics_enabled=False) as img2img_interface:
         save.click(
             fn=wrap_gradio_call(save_files),
             inputs=[
-                generation_info,
+                html_info,
                 gallery,
             ],
             outputs=[
