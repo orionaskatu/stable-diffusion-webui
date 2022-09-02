@@ -70,17 +70,12 @@ printf ${delimiter}
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p "${target}"/miniconda
 rm Miniconda3-latest-Linux-x86_64.sh
-if ! grep -q "Miniconda" ~/.bashrc
-then
-    echo -e "\n#added by Miniconda" >> ~/.bashrc
-    echo "export PATH=\"${target}/miniconda"'/bin:$PATH"' >> ~/.bashrc
-fi
-source ~/.bashrc
 
 printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
-conda init bash
+"${target}"/miniconda/bin/conda init bash
+source ~/.bashrc
 conda update -y -n base -c defaults conda
 conda env create -f stable-diffusion/environment.yaml
 conda activate ldm
