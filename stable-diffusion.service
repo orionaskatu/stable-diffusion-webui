@@ -7,7 +7,7 @@ Type=simple
 
 User=username
 Group=username
-ExecStart=sdtarget/diffusion/stable-diffusion-webui/start.sh
+ExecStart=sdtarget/diffusion/stable-diffusion/stable-diffusion-webui/start.sh
 WorkingDirectory=sdarget/diffusion/
 Restart=on-failure
 
