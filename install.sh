@@ -60,6 +60,7 @@ wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pt
 
 echo -e "Install systemd service\n"
 cp stable-diffusion-webui/stable-diffusion.service /etc/systemd/system/stable-diffusion.service
+sed -i "s/username/${username}/g" /etc/systemd/system/stable-diffusion.service
 sudo systemctl enable stable-diffusion
 
 echo -e "Installation finished successfully!\n"
