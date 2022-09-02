@@ -1284,7 +1284,7 @@ def txt2img(prompt: str, negative_prompt: str, steps: int, sampler_index: int, u
     else:
         processed = process_images(p)
 
-    return processed.images, processed.js(), plaintext_to_html(processed.info)
+    return processed.images, plaintext_to_html(processed.info)
 
 def save_files(js_data, images):
     import csv
@@ -1691,7 +1691,7 @@ def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index
     else:
         processed = process_images(p)
 
-    return processed.images, processed.js(), plaintext_to_html(processed.info)
+    return processed.images, plaintext_to_html(processed.info)
 
 
 sample_img2img = "assets/stable-samples/img2img/sketch-mountains-input.jpg"
