@@ -1,6 +1,6 @@
 #!/bin/bash
 # Need to source conda profile before activating
-source sdtarget/miniconda/etc/profile.d/conda.sh
+source /home/username/miniconda/etc/profile.d/conda.sh
 # Activate python ldm env
 conda activate ldm
 # mitmproxy package needed + nopasswd sudo

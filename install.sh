@@ -129,7 +129,7 @@ printf ${delimiter}
 printf "Install systemd service"
 printf ${delimiter}
 chmod +x stable-diffusion-webui/start.sh
-sed -i "s/sdtarget/\"${target}\"/g" stable-diffusion-webui/start.sh
+sed -i "s/username/\"${username}\"/g" stable-diffusion-webui/start.sh
 sudo cp stable-diffusion-webui/stable-diffusion.service /etc/systemd/system/stable-diffusion.service
 sudo sed -i "s/username/\"${username}\"/g" /etc/systemd/system/stable-diffusion.service
 sudo sed -i "s/sdtarget/\"${target}\"/g" /etc/systemd/system/stable-diffusion.service
