@@ -70,16 +70,16 @@ printf ${delimiter}
 git clone https://github.com/orionaskatu/stable-diffusion-webui.git
 
 printf ${delimiter}
-printf "Install or upgrade Miniconda in \x1B[32m${target}/miniconda\e[0m"
+printf "Install or upgrade Miniconda in \x1B[32m/home/${username}/miniconda\e[0m"
 printf ${delimiter}
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b -p "${target}"/miniconda
+bash Miniconda3-latest-Linux-x86_64.sh -b -p /home/"${username}"/miniconda
 rm Miniconda3-latest-Linux-x86_64.sh
 
 printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
-"${target}"/miniconda/bin/conda init bash
+/home/"${username}"/miniconda/bin/conda init bash
 source ~/.bashrc
 conda update -y -n base -c defaults conda
 conda env create -f stable-diffusion/environment.yaml
