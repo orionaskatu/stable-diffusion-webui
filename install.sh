@@ -80,7 +80,6 @@ source ~/.bashrc
 printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
-eval "$(${target}/miniconda/bin/conda shell.bash hook)"
 conda update -y -n base -c defaults conda
 conda env create -f stable-diffusion/environment.yaml
 conda activate ldm
