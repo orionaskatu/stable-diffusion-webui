@@ -14,8 +14,9 @@ username   ALL=(ALL) NOPASSWD: ALL
 Easy install script:
 `bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
 
-The default directory is `/home/username/`
-If you want to install somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`
+The default installation directory for stable-diffusion is `/home/username/diffusion`.
+Miniconda will be installed in `/home/username/miniconda`.
+If you want to install stable-diffusion somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`.
 
 
 ## Features
@@ -23,7 +24,7 @@ If you want to install somewhere else, just put the path in parameter (without t
 A bash script `start.sh` that:
  - Activates `ldm` conda env
  - Launches a reverse proxy on port 80 to easily access the webui from the local network
- - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --allow-code`
+ - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --lowvram --always-batch-cond-uncond --allow-code`
 
 A System tab with buttons to:
  - Read the last 20 lines of `journalctl -u stable-diffusion`
@@ -33,42 +34,22 @@ A System tab with buttons to:
 
 A bash script `discord.sh` to send infos + images to discord via webhook.
 
-It converts and compress to jpg if file too big for Discord.
+It converts and compress to jpg if file too big for Discord (8MB limit).
 
 Put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
 `https://discord.com/api/webhooks/xxx/xxx`
 
 I also modified some default configs in `webui.py`:
- - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
+ - Defaults width/height to 640x640 (with minimum 192 and maximum 2112)
  - If seed is empty it acts like `seed = -1` (random seed)
- - taming-transformers is in `stable-diffusion/src/` subdirectory
  - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
 
-
-I use a simple systemd service like this one (in `etc/systemd/system/stable-diffusion.service`):
-
-```commandline
-[Unit]
-Description=Stable-Diffusion
-After=network-online.target
-
-[Service]
-Type=simple
-
-User=username
-Group=groupname
-ExecStart=/home/username/stable-diffusion/stable-diffusion-webui/start.sh
-WorkingDirectory=/home/username/stable-diffusion/
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-```
+Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.service` and set to start at boot.
 
  ## TODO
 
  Next planned features:
-  - Send txt2img output to img2img input
+  - ?
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
