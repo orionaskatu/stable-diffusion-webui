@@ -69,8 +69,11 @@ printf ${delimiter}
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p "${target}"/miniconda
 rm Miniconda3-latest-Linux-x86_64.sh
-echo -e "\n#added by Miniconda" >> ~/.bashrc
-echo "export PATH=\"${target}/miniconda"'/bin:$PATH"' >> ~/.bashrc
+if ! grep -q "Miniconda" ~/.bashrc
+then
+    echo -e "\n#added by Miniconda" >> ~/.bashrc
+    echo "export PATH=\"${target}/miniconda"'/bin:$PATH"' >> ~/.bashrc
+fi
 source ~/.bashrc
 
 
