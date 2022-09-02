@@ -95,7 +95,6 @@ pip install -r stable-diffusion-webui/requirements_versions.txt
 printf ${delimiter}
 printf "Download sd-v1-4.ckpt model"
 printf ${delimiter}
-mkdir stable-diffusion/models/ldm/stable-diffusion-v1
 wget -c https://ipfs.io/ipfs/bafybeicrdgunwfjxm5yr7qqe5kgybaog65wnonymaeumzkto4eagrvwz2a/stable-diffusion-v1.4-and-license.zip
 unzip stable-diffusion-v1.4-and-license.zip
 rm stable-diffusion-v1.4-and-license.zip
@@ -112,7 +111,7 @@ then
     rm sd-v1-4.ckpt
     exit 1
 fi
-mv sd-v1-4.ckpt stable-diffusion/models/ldm/stable-diffusion-v1/model.ckpt
+mv sd-v1-4.ckpt stable-diffusion-webui/model.ckpt
 
 printf ${delimiter}
 printf "Download GFPGANv1.3.pth model"
