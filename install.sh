@@ -3,7 +3,7 @@
 delimiter="\n###################################################\n"
 
 printf ${delimiter}
-printf "Install script for stable-diffusion + Web UI"
+printf "Install script for stable-diffusion + Web UI\n"
 printf "Tested on Debian 11 (Bullseye)"
 printf ${delimiter}
 
