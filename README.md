@@ -6,22 +6,14 @@
 
 Tested on Debian 11 (Bullseye), it needs adjustments on other OSes (especially Windows).
 
-I use conda to manage the python env (comment the first lines of `start.sh` if you don't use it):
-
-`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
-
-Packages needed :
-```commandline
-apt -y install curl jo jpegoptim mitmproxy
-```
-
-Replace occurences of `username` by your username.
-
-
-To bind the reverse proxy on port 80 you need to be able to sudo without password (in `/etc/sudoers.d/username`):
+For installation and reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
 ```commmandline
 username   ALL=(ALL) NOPASSWD: ALL
 ```
+
+Easy install script :
+`bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
+
 
 ## Features
 

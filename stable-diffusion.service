@@ -7,8 +7,8 @@ Type=simple
 
 User=username
 Group=username
-ExecStart=/opt/diffusion/stable-diffusion-webui/start.sh
-WorkingDirectory=/opt/diffusion/
+ExecStart=target/diffusion/stable-diffusion-webui/start.sh
+WorkingDirectory=target/diffusion/
 Restart=on-failure
 
 [Install]
