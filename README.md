@@ -1,3 +1,87 @@
+# Prequisites
+
+**It is NOT SAFE to expose this implementation of the Web UI outside your local network (mainly because of passwordless sudo).**
+
+**I'm not a developer and my code is far from good, so you WILL encounter bugs.**
+
+Tested on Debian 11 (Bullseye), it needs adjustments on other OSes (especially Windows).
+
+I use conda to manage the python env (comment the first lines of `start.sh` if you don't use it):
+
+`wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh && bash Anaconda3-2022.05-Linux-x86_64.sh`
+
+Packages needed :
+```commandline
+apt -y install curl jo jpegoptim mitmproxy
+```
+
+Replace occurences of `username` by your username.
+
+
+To bind the reverse proxy on port 80 you need to be able to sudo without password (in `/etc/sudoers.d/username`):
+```commmandline
+username   ALL=(ALL) NOPASSWD: ALL
+```
+
+## Features
+
+A bash script `start.sh` that:
+ - Activates `ldm` conda env
+ - Launches a reverse proxy on port 80 to easily access the webui from the local network
+ - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --allow-code`
+
+A System tab with buttons to:
+ - Read the last 20 lines of `journalctl -u stable-diffusion`
+ - Print `nvidia-smi` output
+ - Purge `outputs` directory
+ - Restart the Web UI (useful in case of OOM)
+
+A bash script `discord.sh` to send infos + images to discord via webhook.
+
+It converts and compress to jpg if file too big for Discord.
+
+Put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
+`https://discord.com/api/webhooks/xxx/xxx`
+
+I also modified some default configs in `webui.py`:
+ - Defaults width/height to 640x640 (minimum 192 and maximum 2112)
+ - If seed is empty it acts like `seed = -1` (random seed)
+ - taming-transformers is in `stable-diffusion/src/` subdirectory
+ - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
+
+
+I use a simple systemd service like this one (in `etc/systemd/system/stable-diffusion.service`):
+
+```commandline
+[Unit]
+Description=Stable-Diffusion
+After=network-online.target
+
+[Service]
+Type=simple
+
+User=username
+Group=groupname
+ExecStart=/home/username/stable-diffusion/stable-diffusion-webui/start.sh
+WorkingDirectory=/home/username/stable-diffusion/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+```
+
+ ## TODO
+
+ Next planned features:
+  - Send txt2img output to img2img input
+
+
+↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
+
+---
+---
+
+
 # Stable Diffusion web UI
 A browser interface based on Gradio library for Stable Diffusion.
 
