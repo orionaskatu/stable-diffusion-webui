@@ -80,9 +80,9 @@ printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
 /home/"${username}"/miniconda/bin/conda init bash
-source ~/.bashrc
+source /home/"${username}"/miniconda/etc/profile.d/conda.sh
 conda update -y -n base -c defaults conda
-conda env create -f stable-diffusion/environment.yaml
+conda env create -f environment.yaml
 conda activate ldm
 
 printf ${delimiter}
