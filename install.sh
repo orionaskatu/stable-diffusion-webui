@@ -1,6 +1,6 @@
 #!/bin/bash
 # Pretty print
-delimiter="\n###################################################\n"
+delimiter="\n#######################################################\n"
 
 printf ${delimiter}
 printf "Install script for stable-diffusion + Web UI\n"
@@ -45,7 +45,7 @@ fi
 printf ${delimiter}
 printf "Install or upgrade mandatory packages"
 printf ${delimiter}
-sudo apt update && sudo apt -y install curl unzip git python3 python3-pip jo jpegoptim mitmproxy
+sudo apt update && sudo apt -y install curl unzip git python3 python3-pip imagemagick jo jpegoptim mitmproxy
 
 printf ${delimiter}
 printf "Create and change directory to \x1B[32m${target}/diffusion/\e[0m"
