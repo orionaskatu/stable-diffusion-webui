@@ -69,6 +69,8 @@ printf ${delimiter}
 wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 bash Miniconda3-latest-Linux-x86_64.sh -b -p "${target}"/miniconda
 rm Miniconda3-latest-Linux-x86_64.sh
+echo -e "\n#added by Miniconda" >> ~/.bashrc
+echo "export PATH=\"${target}/miniconda"'/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 
 
@@ -118,9 +120,11 @@ wget -c https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3
 printf ${delimiter}
 printf "Install systemd service"
 printf ${delimiter}
-cp stable-diffusion-webui/stable-diffusion.service /etc/systemd/system/stable-diffusion.service
-sed -i "s/username/${username}/g" /etc/systemd/system/stable-diffusion.service
-sed -i "s/target/${target}/g" /etc/systemd/system/stable-diffusion.service
+chmod +x ${target}/diffusion/stable-diffusion-webui/start.sh
+sed -i "s/sdtarget/${target}/g" ${target}/diffusion/stable-diffusion-webui/start.sh
+sudo cp stable-diffusion-webui/stable-diffusion.service /etc/systemd/system/stable-diffusion.service
+sudo sed -i "s/username/${username}/g" /etc/systemd/system/stable-diffusion.service
+sudo sed -i "s/sdtarget/${target}/g" /etc/systemd/system/stable-diffusion.service
 sudo systemctl daemon-reload
 sudo systemctl enable stable-diffusion
 
