@@ -4,8 +4,8 @@ delimiter="\n###################################################\n"
 
 printf ${delimiter}
 printf "Install script for stable-diffusion + Web UI"
+printf "Tested on Debian 11 (Bullseye)"
 printf ${delimiter}
-# Tested on Debian 11 (Bullseye)
 
 # Do not run as root
 uid=$(id -u)
@@ -17,6 +17,11 @@ then
     exit 1
 fi
 
+username=$(whoami)
+printf ${delimiter}
+printf "Running on \x1B[32m${username}\e[0m user"
+printf ${delimiter}
+
 # Target directory without trailing slash
 if [[ -z ${1} ]]
 then
@@ -26,11 +31,6 @@ else
 fi
 printf ${delimiter}
 printf "Target directory will be : \x1B[32m${target}/\e[0m"
-printf ${delimiter}
-
-username=$(whoami)
-printf ${delimiter}
-printf "Running on \x1B[32m${username}\e[0m user"
 printf ${delimiter}
 
 # Check if passwordless sudo
@@ -66,12 +66,16 @@ git clone https://github.com/orionaskatu/stable-diffusion-webui.git
 printf ${delimiter}
 printf "Install or upgrade Miniconda in \x1B[32m${target}/miniconda\e[0m"
 printf ${delimiter}
-curl -s https://gist.githubusercontent.com/mherkazandjian/cce01cf3e15c0b41c1c4321245a99096/raw/03c86dae9a212446cf5b095643854f029b39c921/miniconda_installer.sh | bash -s -- "${target}"/miniconda --upgrade
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash Miniconda3-latest-Linux-x86_64.sh -b -p "${target}"/miniconda
+rm Miniconda3-latest-Linux-x86_64.sh
+source ~/.bashrc
+
 
 printf ${delimiter}
 printf "Create conda env and install dependencies"
 printf ${delimiter}
-eval "$(~/miniconda/bin/conda shell.bash hook)"
+eval "$(${target}/miniconda/bin/conda shell.bash hook)"
 conda update -y -n base -c defaults conda
 conda env create -f stable-diffusion/environment.yaml
 conda activate ldm

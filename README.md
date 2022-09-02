@@ -11,8 +11,11 @@ For installation and reverse proxy on port 80 you need to sudo without password 
 username   ALL=(ALL) NOPASSWD: ALL
 ```
 
-Easy install script :
+Easy install script:
 `bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
+
+The default directory is `/home/username/`
+If you want to install somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`
 
 
 ## Features
