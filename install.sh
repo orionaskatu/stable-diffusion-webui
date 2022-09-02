@@ -57,7 +57,12 @@ printf ${delimiter}
 printf "Clone basujindal's optimized stable-diffusion fork"
 printf ${delimiter}
 git clone https://github.com/basujindal/stable-diffusion.git
-cd stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
+
+printf ${delimiter}
+printf "Clone taming-transformers"
+printf ${delimiter}
+git clone https://github.com/CompVis/taming-transformers.git
+cd "${target}"/diffusion/stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
 
 printf ${delimiter}
 printf "Clone stable-diffusion-webui"
@@ -85,8 +90,7 @@ printf "Install Web UI dependencies"
 printf ${delimiter}
 pip install git+https://github.com/crowsonkb/k-diffusion.git
 pip install git+https://github.com/TencentARC/GFPGAN.git
-pip install git+https://github.com/CompVis/taming-transformers.git
-git clone https://github.com/CompVis/taming-transformers.git 
+pip install git+https://github.com/CompVis/taming-transformers.git 
 pip install -r stable-diffusion-webui/requirements_versions.txt
 
 printf ${delimiter}
@@ -108,7 +112,8 @@ then
     rm sd-v1-4.ckpt
     exit 1
 fi
-mv sd-v1-4.ckpt stable-diffusion-webui/model.ckpt
+mkdir models/ldm/stable-diffusion-v1
+mv sd-v1-4.ckpt models/ldm/stable-diffusion-v1/model.ckpt
 
 printf ${delimiter}
 printf "Download GFPGANv1.3.pth model"
@@ -116,15 +121,21 @@ printf ${delimiter}
 wget -c https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -O stable-diffusion-webui/GFPGANv1.3.pth
 
 printf ${delimiter}
+printf "Copy config.json"
+printf ${delimiter}
+cp stable-diffusion-webui/config.json .
+
+printf ${delimiter}
 printf "Install systemd service"
 printf ${delimiter}
-chmod +x ${target}/diffusion/stable-diffusion-webui/start.sh
-sed -i "s/sdtarget/\"${target}\"/g" ${target}/diffusion/stable-diffusion-webui/start.sh
+chmod +x stable-diffusion-webui/start.sh
+sed -i "s/sdtarget/\"${target}\"/g" stable-diffusion-webui/start.sh
 sudo cp stable-diffusion-webui/stable-diffusion.service /etc/systemd/system/stable-diffusion.service
 sudo sed -i "s/username/\"${username}\"/g" /etc/systemd/system/stable-diffusion.service
 sudo sed -i "s/sdtarget/\"${target}\"/g" /etc/systemd/system/stable-diffusion.service
 sudo systemctl daemon-reload
 sudo systemctl enable stable-diffusion
+sudo systemctl start stable-diffusion
 
 printf ${delimiter}
 printf "Installation successful!"
