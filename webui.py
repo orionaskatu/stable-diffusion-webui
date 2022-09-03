@@ -2081,6 +2081,7 @@ def PurgeOutputs():
     return purge_outputs
 
 def ExitWebui():
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
     restartui = os.system('sudo systemctl restart stable-diffusion')
     return restartui
 
@@ -2172,6 +2173,8 @@ def inject_gradio_html(javascript):
 
 
 inject_gradio_html(javascript)
+
+os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
 
 demo.queue(concurrency_count=1)
 demo.launch(share=cmd_opts.share)
