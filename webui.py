@@ -2085,6 +2085,11 @@ def ExitWebui():
     restartui = os.system('sudo systemctl restart stable-diffusion')
     return restartui
 
+def Shutdown():
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is shutting down!', 'stable-diffusion-webui/images/shutdown.png']))
+    shutdown = os.system('sudo systemctl poweroff')
+    return shutdown
+
 with gr.Blocks(analytics_enabled=False) as system_interface:
     with gr.Row().style(equal_height=False):
         with gr.Column():
@@ -2102,6 +2107,9 @@ with gr.Blocks(analytics_enabled=False) as system_interface:
         with gr.Column():
             exit_btn = gr.Button("Restart WebUI", variant="primary")
             exit_btn.click(ExitWebui, [], [])
+        with gr.Column():
+            exit_btn = gr.Button("Shutdown System", variant="primary")
+            exit_btn.click(Shutdown, [], [])
 
 interfaces = [
     (txt2img_interface, "txt2img"),
