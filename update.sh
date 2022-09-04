@@ -45,6 +45,7 @@ fi
 printf ${delimiter}
 printf "Stop stable-diffusion"
 printf ${delimiter}
+./discord.sh 'The stable-diffusion server is updating!' 'images/update.png'
 sudo systemctl stop stable-diffusion
 
 printf ${delimiter}
@@ -56,19 +57,22 @@ printf ${delimiter}
 printf "Update basujindal's optimized stable-diffusion fork"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion, aborting...\e[0m"; exit 1; }
-git pull
+git fetch --all
+git reset --hard origin/master
 
 printf ${delimiter}
 printf "Update taming-transformers"
 printf ${delimiter}
 cd "${target}"/diffusion/taming-transformers/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/taming-transformers/, aborting...\e[0m"; exit 1; }
-git pull
+git fetch --all
+git reset --hard origin/master
 
 printf ${delimiter}
 printf "Update stable-diffusion-webui"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion/stable-diffusion-webui || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/stable-diffusion-webui, aborting...\e[0m"; exit 1; }
-git pull
+git fetch --all
+git reset --hard origin/master
 cd ..
 
 printf ${delimiter}
