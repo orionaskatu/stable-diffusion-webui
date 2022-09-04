@@ -45,7 +45,8 @@ fi
 printf ${delimiter}
 printf "Stop stable-diffusion"
 printf ${delimiter}
-./discord.sh 'The stable-diffusion server is updating!' 'images/update.png'
+cd "${target}"/diffusion/stable-diffusion || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion, aborting...\e[0m"; exit 1; }
+stable-diffusion-webui/discord.sh 'The stable-diffusion server is updating!' 'stable-diffusion-webui/images/update.png'
 sudo systemctl stop stable-diffusion
 
 printf ${delimiter}
