@@ -59,7 +59,7 @@ printf "Update basujindal's optimized stable-diffusion fork"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion, aborting...\e[0m"; exit 1; }
 git fetch --all
-git reset --hard origin/master
+git reset --hard origin/main
 
 printf ${delimiter}
 printf "Update taming-transformers"
