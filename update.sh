@@ -69,6 +69,7 @@ printf "Update stable-diffusion-webui"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion/stable-diffusion-webui || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/stable-diffusion-webui, aborting...\e[0m"; exit 1; }
 git pull
+cd ..
 
 printf ${delimiter}
 printf "Update conda env and dependencies"
