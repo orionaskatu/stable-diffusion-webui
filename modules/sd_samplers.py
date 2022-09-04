@@ -144,4 +144,3 @@ class KDiffusionSampler:
 
         samples_ddim = self.func(self.model_wrap_cfg, x, sigmas, extra_args={'cond': conditioning, 'uncond': unconditional_conditioning, 'cond_scale': p.cfg_scale}, disable=False)
         return samples_ddim
-
