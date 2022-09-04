@@ -71,13 +71,6 @@ cd "${target}"/diffusion/stable-diffusion/stable-diffusion-webui || { printf "\x
 git pull
 
 printf ${delimiter}
-printf "Install or upgrade Miniconda in \x1B[32m/home/${username}/miniconda\e[0m"
-printf ${delimiter}
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-bash Miniconda3-latest-Linux-x86_64.sh -b -p /home/"${username}"/miniconda
-rm Miniconda3-latest-Linux-x86_64.sh
-
-printf ${delimiter}
 printf "Update conda env and dependencies"
 printf ${delimiter}
 source /home/"${username}"/miniconda/etc/profile.d/conda.sh
