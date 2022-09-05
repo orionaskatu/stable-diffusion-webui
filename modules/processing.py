@@ -132,7 +132,9 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
             "Sampler": samplers[p.sampler_index].name,
             "CFG scale": p.cfg_scale,
             "Seed": all_seeds[position_in_batch + iteration * p.batch_size],
-            "GFPGAN": ("GFPGAN" if p.use_GFPGAN else None)
+            "GFPGAN": ("GFPGAN" if p.use_GFPGAN else None),
+            "Batch size": (None if p.batch_size < 2 else p.batch_size),
+            "Batch pos": (None if p.batch_size < 2 else position_in_batch),
         }
 
         if p.extra_generation_params is not None:
@@ -322,7 +324,7 @@ class StableDiffusionProcessingImg2Img(StableDiffusionProcessing):
             if self.inpaint_full_res:
                 self.mask_for_overlay = self.image_mask
                 mask = self.image_mask.convert('L')
-                crop_region = get_crop_region(np.array(mask), 64)
+                crop_region = get_crop_region(np.array(mask), opts.upscale_at_full_resolution_padding)
                 x1, y1, x2, y2 = crop_region
 
                 mask = mask.crop(crop_region)

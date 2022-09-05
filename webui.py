@@ -172,6 +172,5 @@ demo = modules.ui.create_ui(
 )
 
 os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
-
 demo.queue(concurrency_count=1)
-demo.launch(share=cmd_opts.share)
+demo.launch(share=cmd_opts.share, server_name="0.0.0.0" if cmd_opts.listen else None)
