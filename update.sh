@@ -43,12 +43,6 @@ then
 fi
 
 printf ${delimiter}
-printf "Stop stable-diffusion"
-printf ${delimiter}
-cd "${target}"/diffusion/stable-diffusion || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion, aborting...\e[0m"; exit 1; }
-sudo systemctl stop stable-diffusion
-
-printf ${delimiter}
 printf "Upgrade packages"
 printf ${delimiter}
 sudo apt update && sudo apt -y upgrade
@@ -97,7 +91,7 @@ printf "Start stable-diffusion"
 printf ${delimiter}
 chmod +x stable-diffusion-webui/start.sh
 sed -i "s/username/${username}/g" stable-diffusion-webui/start.sh
-sudo systemctl start stable-diffusion
+sudo systemctl restart stable-diffusion
 
 printf ${delimiter}
 printf "Installation successful!"
