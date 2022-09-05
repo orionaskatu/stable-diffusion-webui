@@ -191,7 +191,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
 
                 with gr.Group():
                     html_info = gr.HTML()
-                    generation_info = gr.Textbox(visible=False)
+                    generation_info = gr.Textbox(show_label=False)
 
             txt2img_args = dict(
                 fn=txt2img,
@@ -299,7 +299,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
 
                 with gr.Group():
                     html_info = gr.HTML()
-                    generation_info = gr.Textbox(visible=False)
+                    generation_info = gr.Textbox(show_label=False)
 
             def apply_mode(mode):
                 is_classic = mode == 0
