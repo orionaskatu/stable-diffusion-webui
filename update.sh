@@ -87,10 +87,8 @@ pip install -r stable-diffusion-webui/requirements_versions.txt
 pip install basicsr==1.3.5
 
 printf ${delimiter}
-printf "Start stable-diffusion"
+printf "Restart stable-diffusion"
 printf ${delimiter}
-chmod +x stable-diffusion-webui/start.sh
-sed -i "s/username/${username}/g" stable-diffusion-webui/start.sh
 sudo systemctl restart stable-diffusion
 
 printf ${delimiter}
