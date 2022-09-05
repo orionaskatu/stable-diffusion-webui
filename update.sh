@@ -23,11 +23,11 @@ printf "Running on \x1B[32m${username}\e[0m user"
 printf ${delimiter}
 
 # Target directory without trailing slash
-if [[ -z ${1} ]]
+if [[ -e stable-diffusion-webui/target ]]
 then
     target=$(cat stable-diffusion-webui/target)
 else
-    target="${1}"
+    target="/home/${username}"
 fi
 printf ${delimiter}
 printf "Target directory will be : \x1B[32m${target}/\e[0m"
