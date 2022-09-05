@@ -43,6 +43,11 @@ then
 fi
 
 printf ${delimiter}
+printf "Stop stable-diffusion"
+printf ${delimiter}
+sudo systemctl stop stable-diffusion
+
+printf ${delimiter}
 printf "Upgrade packages"
 printf ${delimiter}
 sudo apt update && sudo apt -y upgrade
@@ -87,9 +92,9 @@ pip install -r stable-diffusion-webui/requirements_versions.txt
 pip install basicsr==1.3.5
 
 printf ${delimiter}
-printf "Restart stable-diffusion"
+printf "Start stable-diffusion"
 printf ${delimiter}
-sudo systemctl restart stable-diffusion
+sudo systemctl start stable-diffusion
 
 printf ${delimiter}
 printf "Update successful!"
