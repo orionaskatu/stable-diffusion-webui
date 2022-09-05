@@ -49,9 +49,9 @@ cd "${target}"/diffusion/stable-diffusion || { printf "\x1B[31mERROR: Can't cd t
 sudo systemctl stop stable-diffusion
 
 printf ${delimiter}
-printf "Upgrade mandatory packages"
+printf "Upgrade packages"
 printf ${delimiter}
-sudo apt update && sudo apt -y install curl unzip git python3 python3-pip imagemagick jo jpegoptim mitmproxy
+sudo apt update && sudo apt -y upgrade
 
 printf ${delimiter}
 printf "Update basujindal's optimized stable-diffusion fork"
