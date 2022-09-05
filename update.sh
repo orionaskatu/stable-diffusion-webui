@@ -92,5 +92,5 @@ printf ${delimiter}
 sudo systemctl restart stable-diffusion
 
 printf ${delimiter}
-printf "Installation successful!"
+printf "Update successful!"
 printf ${delimiter}
