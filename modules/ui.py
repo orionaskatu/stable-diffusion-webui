@@ -531,6 +531,11 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
         return purge_outputs
 
     def ExitWebui():
+        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is updating!', 'stable-diffusion-webui/images/update.png']))
+        restartui = os.system('cp stable-diffusion-webui/update.sh . && bash update.sh $(cat target)')
+        return restartui
+
+    def ExitWebui():
         os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
         restartui = os.system('sudo systemctl restart stable-diffusion')
         return restartui
@@ -554,6 +559,9 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
             with gr.Column():
                 purge_btn = gr.Button("Purge Outputs Directory", variant="primary")
                 purge_btn.click(PurgeOutputs, [], [])
+            with gr.Column():
+                exit_btn = gr.Button("Update WebUI", variant="primary")
+                exit_btn.click(UpdateWebui, [], [])
             with gr.Column():
                 exit_btn = gr.Button("Restart WebUI", variant="primary")
                 exit_btn.click(ExitWebui, [], [])

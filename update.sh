@@ -25,7 +25,7 @@ printf ${delimiter}
 # Target directory without trailing slash
 if [[ -z ${1} ]]
 then
-    target="/home/${username}"
+    target=$(cat stable-diffusion-webui/target)
 else
     target="${1}"
 fi

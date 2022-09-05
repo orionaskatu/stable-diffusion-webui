@@ -124,6 +124,7 @@ printf ${delimiter}
 printf "Copy config.json"
 printf ${delimiter}
 cp stable-diffusion-webui/config.json .
+echo "${target}" > "${target}"/diffusion/stable-diffusion/stable-diffusion-webui/target
 
 printf ${delimiter}
 printf "Install systemd service"
