@@ -213,7 +213,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     txt2img_gallery,
                     generation_info,
                     html_info
-                ]
+                ],
+                scroll_to_output=True
             )
 
             prompt.submit(**txt2img_args)
@@ -366,7 +367,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     img2img_gallery,
                     generation_info,
                     html_info
-                ]
+                ],
+                scroll_to_output=True
             )
 
             prompt.submit(**img2img_args)
@@ -444,7 +446,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                 result_image,
                 html_info_x,
                 html_info,
-            ]
+            ],
+            scroll_to_output=True
         )
 
         submit.click(**extras_args)
