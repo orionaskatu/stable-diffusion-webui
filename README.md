@@ -18,7 +18,9 @@ Easy install script:
 
 
 The default installation directory for stable-diffusion is `/home/username/diffusion`.
+
 Miniconda will be installed in `/home/username/miniconda`.
+
 If you want to install stable-diffusion somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`, it will be installed in a subdirectory named `diffusion`.
 
 
@@ -58,7 +60,7 @@ It converts and compress to jpg if the file is too big for Discord (8MB limit).
 You have to put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
 `https://discord.com/api/webhooks/xxx/xxx`
 
-I also modified some default configs in some python files:
+I also modified some defaults in python files:
  - If seed is empty it acts like `seed = -1` (random seed)
  - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
 
