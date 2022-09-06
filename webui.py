@@ -55,6 +55,7 @@ def load_model_from_config(config, ckpt, verbose=False):
 
 cached_images = {}
 
+
 def run_extras(image, gfpgan_strength, upscaling_resize, extras_upscaler_1, extras_upscaler_2, extras_upscaler_2_visibility):
     processing.torch_gc()
 
@@ -123,10 +124,16 @@ queue_lock = threading.Lock()
 
 def wrap_gradio_gpu_call(func):
     def f(*args, **kwargs):
+        shared.state.sampling_step = 0
+        shared.state.job_count = 1
+        shared.state.job_no = 0
+
+
         with queue_lock:
             res = func(*args, **kwargs)
 
         shared.state.job = ""
+        shared.state.job_count = 0
 
         return res
 
@@ -155,22 +162,22 @@ modules.sd_hijack.model_hijack.hijack(shared.sd_model)
 
 modules.scripts.load_scripts(os.path.join(script_path, "scripts"))
 
+if __name__ == "__main__":
+    # make the program just exit at ctrl+c without waiting for anything
+    def sigint_handler(sig, frame):
+        print(f'Interrupted with singal {sig} in {frame}')
+        os._exit(0)
 
-# make the program just exit at ctrl+c without waiting for anything
-def sigint_handler(sig, frame):
-    print(f'Interrupted with singal {sig} in {frame}')
-    os._exit(0)
 
+    signal.signal(signal.SIGINT, sigint_handler)
 
-signal.signal(signal.SIGINT, sigint_handler)
+    demo = modules.ui.create_ui(
+        txt2img=wrap_gradio_gpu_call(modules.txt2img.txt2img),
+        img2img=wrap_gradio_gpu_call(modules.img2img.img2img),
+        run_extras=wrap_gradio_gpu_call(run_extras),
+        run_pnginfo=run_pnginfo
+    )
 
-demo = modules.ui.create_ui(
-    txt2img=wrap_gradio_gpu_call(modules.txt2img.txt2img),
-    img2img=wrap_gradio_gpu_call(modules.img2img.img2img),
-    run_extras=wrap_gradio_gpu_call(run_extras),
-    run_pnginfo=run_pnginfo
-)
-
-os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
-demo.queue(concurrency_count=1)
-demo.launch(share=cmd_opts.share, server_name="0.0.0.0" if cmd_opts.listen else None)
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
+    demo.queue(concurrency_count=1)
+    demo.launch(share=cmd_opts.share, server_name="0.0.0.0" if cmd_opts.listen else None)
