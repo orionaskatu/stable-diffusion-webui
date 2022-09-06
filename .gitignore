@@ -1,5 +1,9 @@
-discordurl.txt
-test.py
-GFPGANv1.3.pth
-target
-update.log
+__pycache__
+/ESRGAN
+/model.ckpt
+/GFPGANv1.3.pth
+/outputs
+/discordurl.txt
+/test.py
+/target
+/update.log
