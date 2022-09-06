@@ -6,7 +6,7 @@
 
 Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros (it won't work on Windows/MacOS though).
 
-You just need `python 3` and the `proprietary nvidia drivers`.
+You just need `python3` and the `proprietary nvidia drivers`.
 
 For installation and reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
 ```commmandline
@@ -17,9 +17,9 @@ Easy install script:
 `bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
 
 
-The default installation directory for stable-diffusion is `/home/username/diffusion`.
+The default installation directory for stable-diffusion is `/home/$username/diffusion`.
 
-Miniconda will be installed in `/home/username/miniconda`.
+Miniconda will be installed in `/home/$username/miniconda`.
 
 If you want to install stable-diffusion somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`, it will be installed in a subdirectory named `diffusion`.
 
@@ -42,7 +42,7 @@ A bash script `update.sh`that:
 A bash script `start.sh` that:
  - Activates `ldm` conda env
  - Launches a reverse proxy on port 80 to easily access the webui from the local network
- - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --allow-code`
+ - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --opt-split-attention --allow-code`
 
 A System tab with buttons to:
  - Read the last 20 lines of `journalctl -u stable-diffusion`
@@ -60,9 +60,7 @@ It converts and compress to jpg if the file is too big for Discord (8MB limit).
 You have to put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
 `https://discord.com/api/webhooks/xxx/xxx`
 
-I also modified some defaults in python files:
- - If seed is empty it acts like `seed = -1` (random seed)
- - Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
+Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
 
 Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.service` and set to start at boot.
 
