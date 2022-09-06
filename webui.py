@@ -27,6 +27,8 @@ import modules.lowvram
 import modules.txt2img
 import modules.img2img
 
+import shlex
+from shlex import join
 
 esrgan.load_models(cmd_opts.esrgan_models_path)
 realesrgan.setup_realesrgan()
@@ -178,4 +180,6 @@ if __name__ == "__main__":
         run_pnginfo=run_pnginfo
     )
 
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
+    demo.queue(concurrency_count=1)
     demo.launch(share=cmd_opts.share, server_name="0.0.0.0" if cmd_opts.listen else None)
