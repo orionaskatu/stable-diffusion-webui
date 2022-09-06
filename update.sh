@@ -85,11 +85,7 @@ conda activate ldm
 printf ${delimiter}
 printf "Update Web UI dependencies"
 printf ${delimiter}
-pip install git+https://github.com/crowsonkb/k-diffusion.git
-pip install git+https://github.com/TencentARC/GFPGAN.git
-pip install git+https://github.com/CompVis/taming-transformers.git
 pip install -r stable-diffusion-webui/requirements_versions.txt
-pip install basicsr==1.3.5
 
 printf ${delimiter}
 printf "Start stable-diffusion"
