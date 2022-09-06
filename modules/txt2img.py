@@ -33,4 +33,3 @@ def txt2img(prompt: str, negative_prompt: str, steps: int, sampler_index: int, u
         processed = process_images(p)
 
     return processed.images, processed.js(), plaintext_to_html(processed.info)
-

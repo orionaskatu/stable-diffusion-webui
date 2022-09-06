@@ -111,4 +111,3 @@ class Script(scripts.Script):
         processed = Processed(p, [combined_image], initial_seed, initial_info)
 
         return processed
-

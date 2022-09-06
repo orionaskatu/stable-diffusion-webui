@@ -1,8 +1,5 @@
-__pycache__
-/ESRGAN
-/repositories
-/venv
-/tmp
-/model.ckpt
-/GFPGANv1.3.pth
-/ui-config.json
+discordurl.txt
+test.py
+GFPGANv1.3.pth
+target
+update.log
