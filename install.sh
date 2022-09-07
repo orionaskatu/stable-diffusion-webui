@@ -63,11 +63,16 @@ printf ${delimiter}
 printf "Clone taming-transformers"
 printf ${delimiter}
 git clone https://github.com/CompVis/taming-transformers.git
-cd "${target}"/diffusion/stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
+
+printf ${delimiter}
+printf "Clone CodeFormer"
+printf ${delimiter}
+git clone https://github.com/sczhou/CodeFormer.git
 
 printf ${delimiter}
 printf "Clone stable-diffusion-webui"
 printf ${delimiter}
+cd "${target}"/diffusion/stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
 git clone https://github.com/orionaskatu/stable-diffusion-webui.git
 
 printf ${delimiter}
@@ -90,6 +95,7 @@ printf ${delimiter}
 printf "Install Web UI dependencies"
 printf ${delimiter}
 pip install -r stable-diffusion-webui/requirements_versions.txt
+pip install -r ../CodeFormer/requirements.txt --prefer-binary
 
 printf ${delimiter}
 printf "Download sd-v1-4.ckpt model"

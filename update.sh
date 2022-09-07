@@ -67,6 +67,13 @@ git fetch --all
 git reset --hard origin/master
 
 printf ${delimiter}
+printf "Update CodeFormer"
+printf ${delimiter}
+cd "${target}"/diffusion/CodeFormer/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/CodeFormer/, aborting...\e[0m"; exit 1; }
+git fetch --all
+git reset --hard origin/master
+
+printf ${delimiter}
 printf "Update stable-diffusion-webui"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion/stable-diffusion-webui || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/stable-diffusion-webui, aborting...\e[0m"; exit 1; }
@@ -86,6 +93,7 @@ printf ${delimiter}
 printf "Update Web UI dependencies"
 printf ${delimiter}
 pip install -r stable-diffusion-webui/requirements_versions.txt
+pip install -r ../CodeFormer/requirements.txt --prefer-binary
 
 printf ${delimiter}
 printf "Start stable-diffusion"
