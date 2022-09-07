@@ -21,9 +21,10 @@ from modules.paths import script_path
 from modules.shared import opts, cmd_opts
 import modules.shared as shared
 from modules.sd_samplers import samplers, samplers_for_img2img
-import modules.gfpgan_model as gfpgan
 import modules.realesrgan_model as realesrgan
 import modules.scripts
+import modules.gfpgan_model
+import modules.codeformer_model
 
 import subprocess
 
@@ -211,7 +212,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                 sampler_index = gr.Radio(label='Sampling method', elem_id="txt2img_sampling", choices=[x.name for x in samplers], value=samplers[0].name, type="index")
 
                 with gr.Row():
-                    use_gfpgan = gr.Checkbox(label='GFPGAN', value=False, visible=gfpgan.have_gfpgan)
+                    restore_faces = gr.Checkbox(label='Restore faces', value=False, visible=len(shared.face_restorers) > 1)
                     tiling = gr.Checkbox(label='Tiling', value=False)
 
                 with gr.Row():
@@ -258,7 +259,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     negative_prompt,
                     steps,
                     sampler_index,
-                    use_gfpgan,
+                    restore_faces,
                     tiling,
                     batch_count,
                     batch_size,
@@ -341,7 +342,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     inpainting_mask_invert = gr.Radio(label='Masking mode', choices=['Inpaint masked', 'Inpaint not masked'], value='Inpaint masked', type="index", visible=False)
 
                 with gr.Row():
-                    use_gfpgan = gr.Checkbox(label='GFPGAN', value=False, visible=gfpgan.have_gfpgan)
+                    restore_faces = gr.Checkbox(label='Restore faces', value=False, visible=len(shared.face_restorers) > 1)
                     tiling = gr.Checkbox(label='Tiling', value=False)
                     sd_upscale_overlap = gr.Slider(minimum=0, maximum=256, step=16, label='Tile overlap', value=64, visible=False)
 
@@ -431,7 +432,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     sampler_index,
                     mask_blur,
                     inpainting_fill,
-                    use_gfpgan,
+                    restore_faces,
                     tiling,
                     switch_mode,
                     batch_count,
@@ -528,7 +529,11 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     extras_upscaler_2_visibility = gr.Slider(minimum=0.0, maximum=1.0, step=0.001, label="Upscaler 2 visibility", value=1)
 
                 with gr.Group():
-                    gfpgan_strength = gr.Slider(minimum=0.0, maximum=1.0, step=0.001, label="GFPGAN strength", value=0, interactive=gfpgan.have_gfpgan)
+                    gfpgan_visibility = gr.Slider(minimum=0.0, maximum=1.0, step=0.001, label="GFPGAN visibility", value=0, interactive=modules.gfpgan_model.have_gfpgan)
+
+                with gr.Group():
+                    codeformer_visibility = gr.Slider(minimum=0.0, maximum=1.0, step=0.001, label="CodeFormer visibility", value=0, interactive=modules.codeformer_model.have_codeformer)
+                    codeformer_weight = gr.Slider(minimum=0.0, maximum=1.0, step=0.001, label="CodeFormer weight (0 = maximum effect, 1 = minimum effect)", value=0, interactive=modules.codeformer_model.have_codeformer)
 
                 submit = gr.Button('Generate', elem_id="extras_generate", variant='primary')
 
@@ -541,7 +546,9 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
             fn=run_extras,
             inputs=[
                 image,
-                gfpgan_strength,
+                gfpgan_visibility,
+                codeformer_visibility,
+                codeformer_weight,
                 upscaling_resize,
                 extras_upscaler_1,
                 extras_upscaler_2,
@@ -593,7 +600,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
         t = type(info.default)
 
         if info.component is not None:
-            item = info.component(label=info.label, value=fun, **(info.component_args or {}))
+            args = info.component_args() if callable(info.component_args) else info.component_args
+            item = info.component(label=info.label, value=fun, **(args or {}))
         elif t == str:
             item = gr.Textbox(label=info.label, value=fun, lines=1)
         elif t == int:
