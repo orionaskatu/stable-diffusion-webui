@@ -652,7 +652,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
 
     def UpdateWebui():
         os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is updating!', 'stable-diffusion-webui/images/update.png']))
-        updateui = os.system('wget https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/update.sh &&  echo "bash update.sh $(cat stable-diffusion-webui/target) > stable-diffusion-webui/update.log 2>&1" | at now')
+        updateui = os.system('wget -O https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/update.sh &&  echo "bash update.sh $(cat stable-diffusion-webui/target) > stable-diffusion-webui/update.log 2>&1" | at now')
         return updateui
 
     def ExitWebui():
