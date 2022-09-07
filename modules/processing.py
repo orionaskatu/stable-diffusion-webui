@@ -110,7 +110,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
 
     assert p.prompt is not None
     torch_gc()
-
+    
     seed = set_seed(p.seed)
 
     os.makedirs(p.outpath_samples, exist_ok=True)

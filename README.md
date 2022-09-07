@@ -1,3 +1,81 @@
+# Prequisites
+
+**It is NOT SAFE to expose this implementation of the Web UI outside your local network (mainly because of passwordless sudo).**
+
+**I'm not a developer and my code is far from good, so you WILL encounter bugs.**
+
+Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros (it won't work on Windows/MacOS though).
+
+You just need `python3` and the `proprietary nvidia drivers`.
+
+For installation and reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
+```commmandline
+username   ALL=(ALL) NOPASSWD: ALL
+```
+
+Easy install script:
+`bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
+
+
+The default installation directory for stable-diffusion is `/home/$username/diffusion`.
+
+Miniconda will be installed in `/home/$username/miniconda`.
+
+If you want to install stable-diffusion somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`, it will be installed in a subdirectory named `diffusion`.
+
+
+## Features
+
+A bash script `install.sh` that:
+ - Installs all system dependencies
+ - Installs stable-diffusion + WebUI
+ - Installs Miniconda and all python dependencies
+ - Downloads the sd-v1-4.ckpt model
+ - Download the GFPGANv1.3.pth model
+ - Creates a systemd service to easily control stable-diffusion
+
+A bash script `update.sh`that:
+  - Updates all system packages
+  - Updates all github sources
+  - Updates all python dependencies
+
+A bash script `start.sh` that:
+ - Activates `ldm` conda env
+ - Launches a reverse proxy on port 80 to easily access the webui from the local network
+ - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --opt-split-attention --allow-code`
+
+A System tab with buttons to:
+ - Read the last 20 lines of `journalctl -u stable-diffusion`
+ - Print `nvidia-smi` output
+ - Purge `outputs` directory
+ - Update stable-diffusion and the WebUI
+ - Restart the WebUI (useful in case of OOM)
+ - Power off the system
+
+A bash script `discord.sh` to send generation infos + images to discord via webhook.
+It also sends status changes on start/update/reboot/stop.
+
+It converts and compress to jpg if the file is too big for Discord (8MB limit).
+
+You have to put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
+`https://discord.com/api/webhooks/xxx/xxx`
+
+Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
+
+Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.service` and set to start at boot.
+
+ ## TODO
+
+ Next planned features:
+  - ?
+
+
+↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
+
+---
+---
+
+
 # Stable Diffusion web UI
 A browser interface based on Gradio library for Stable Diffusion.
 
