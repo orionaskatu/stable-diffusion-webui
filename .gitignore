@@ -3,6 +3,8 @@ __pycache__
 /model.ckpt
 /GFPGANv1.3.pth
 /outputs
+/log
+/webui.settings.bat
 /discordurl.txt
 /test.py
 /target
