@@ -656,7 +656,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
         return updateui
 
     def Readupdatelog():
-        updatelogfile = os.system('cat update.log')
+        updatelogfile = os.system('cat stable-diffusion-webui/update.log')
         return updatelogfile
 
     def ExitWebui():
