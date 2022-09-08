@@ -11,7 +11,7 @@ from modules.ui import plaintext_to_html
 import modules.images as images
 import modules.scripts
 
-def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index: int, mask_blur: int, inpainting_fill: int, restore_faces: bool, tiling: bool, mode: int, n_iter: int, batch_size: int, cfg_scale: float, denoising_strength: float, seed: int, height: int, width: int, resize_mode: int, upscaler_index: str, upscale_overlap: int, inpaint_full_res: bool, inpainting_mask_invert: int, *args):
+def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index: int, mask_blur: int, inpainting_fill: int, restore_faces: bool, tiling: bool, mode: int, n_iter: int, batch_size: int, cfg_scale: float, denoising_strength: float, denoising_strength_change_factor: float, seed: int, height: int, width: int, resize_mode: int, upscaler_index: str, upscale_overlap: int, inpaint_full_res: bool, inpainting_mask_invert: int, *args):
     is_inpaint = mode == 1
     is_loopback = mode == 2
     is_upscale = mode == 3
@@ -50,8 +50,12 @@ def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index
         denoising_strength=denoising_strength,
         inpaint_full_res=inpaint_full_res,
         inpainting_mask_invert=inpainting_mask_invert,
-        extra_generation_params={"Denoising Strength": denoising_strength}
+        extra_generation_params={
+            "Denoising strength": denoising_strength,
+            "Denoising strength change factor": denoising_strength_change_factor
+        }
     )
+    print(f"\nimg2img: {prompt}", file=shared.progress_print_out)
 
     if is_loopback:
         output_images, info = None, None
@@ -99,7 +103,7 @@ def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index
 
             p.init_images = [init_img]
             p.seed = processed.seed + 1
-            p.denoising_strength = max(p.denoising_strength * 0.95, 0.1)
+            p.denoising_strength = min(max(p.denoising_strength * denoising_strength_change_factor, 0.1), 1)
             history.append(processed.images[0])
 
         grid = images.image_grid(history, batch_size, rows=1)
@@ -168,5 +172,6 @@ def img2img(prompt: str, init_img, init_img_with_mask, steps: int, sampler_index
         if processed is None:
             processed = process_images(p)
 
+    shared.total_tqdm.clear()
 
     return processed.images, processed.js(), plaintext_to_html(processed.info)
