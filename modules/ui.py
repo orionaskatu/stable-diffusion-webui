@@ -655,6 +655,10 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
         updateui = os.system('wget https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/update.sh -O update.sh &&  echo "bash update.sh $(cat stable-diffusion-webui/target) > stable-diffusion-webui/update.log 2>&1" | at now')
         return updateui
 
+    def Readupdatelog():
+        updatelogfile = os.system('cat update.log')
+        return updatelogfile
+
     def ExitWebui():
         os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
         restartui = os.system('sudo systemctl restart stable-diffusion')
@@ -671,6 +675,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                 logfile_out = gr.Textbox(label="Logfile", lines=20)
                 logfile_btn = gr.Button("Refresh Log")
                 logfile_btn.click(Readlog, [], logfile_out, queue=False)
+                updatelogfile_btn = gr.Button("Last Update Log")
+                updatelogfile_btn.click(Readupdatelog, [], logfile_out, queue=False)
             with gr.Column():
                 nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
                 nvidia_smi_btn = gr.Button("Nvidia-smi")
