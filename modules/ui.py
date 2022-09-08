@@ -656,8 +656,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
         return updateui
 
     def Readupdatelog():
-        updatelogfile = os.system('cat stable-diffusion-webui/update.log')
-        return updatelogfile
+        with open('stable-diffusion-webui/update.log', 'r') as updatelogfile:
+            return updatelogfile
 
     def ExitWebui():
         os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
