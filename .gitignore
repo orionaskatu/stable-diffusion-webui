@@ -1,13 +1,12 @@
 __pycache__
 /ESRGAN
-/repositories
-/venv
-/tmp
 /model.ckpt
 /GFPGANv1.3.pth
-/ui-config.json
 /outputs
-/config.json
 /log
 /webui.settings.bat
 /embeddings
+/discordurl.txt
+/test.py
+/target
+/update.log
