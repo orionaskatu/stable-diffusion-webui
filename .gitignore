@@ -6,6 +6,8 @@ __pycache__
 /log
 /webui.settings.bat
 /embeddings
+/styles.csv
+/webui-user.bat
 /discordurl.txt
 /test.py
 /target
