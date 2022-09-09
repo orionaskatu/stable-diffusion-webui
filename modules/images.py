@@ -5,9 +5,13 @@ import re
 
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, PngImagePlugin
+from fonts.ttf import Roboto
 
 import modules.shared
 from modules.shared import opts
+
+import shlex
+from shlex import join
 
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
 
@@ -132,7 +136,10 @@ def draw_grid_annotations(im, width, height, hor_texts, ver_texts):
 
     fontsize = (width + height) // 25
     line_spacing = fontsize // 2
-    fnt = ImageFont.truetype(opts.font, fontsize)
+    if not opts.font:
+        fnt = ImageFont.truetype(Roboto, fontsize)
+    else:
+        fnt = ImageFont.truetype(opts.font, fontsize)
     color_active = (0, 0, 0)
     color_inactive = (153, 153, 153)
 
@@ -292,6 +299,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         with open(f"{fullfn_without_extension}.txt", "w", encoding="utf8") as file:
             file.write(info + "\n")
 
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', info, fullfn]))
 
 class Upscaler:
     name = "Lanczos"
