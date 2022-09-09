@@ -5,6 +5,7 @@ import re
 
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw, PngImagePlugin
+from fonts.ttf import Roboto
 
 import modules.shared
 from modules.shared import opts
