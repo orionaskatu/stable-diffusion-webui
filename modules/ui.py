@@ -679,10 +679,10 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
     with gr.Blocks(analytics_enabled=False) as system_interface:
         with gr.Row().style(equal_height=False):
             with gr.Column():
-                logfile_out = gr.Textbox(label="Logfile", lines=20)
-                logfile_btn = gr.Button("Refresh Log")
+                logfile_out = gr.Textbox(label="Logs", lines=20)
+                logfile_btn = gr.Button("Refresh journalctl")
                 logfile_btn.click(Readlog, [], logfile_out, queue=False)
-                updatelogfile_btn = gr.Button("Last Update Log")
+                updatelogfile_btn = gr.Button("Read update.log")
                 updatelogfile_btn.click(Readupdatelog, [], logfile_out, queue=False)
             with gr.Column():
                 nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
