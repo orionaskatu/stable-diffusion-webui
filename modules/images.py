@@ -136,7 +136,10 @@ def draw_grid_annotations(im, width, height, hor_texts, ver_texts):
 
     fontsize = (width + height) // 25
     line_spacing = fontsize // 2
-    fnt = ImageFont.truetype(opts.font, fontsize)
+    if not opts.font:
+        fnt = ImageFont.truetype(Roboto, fontsize)
+    else:
+        fnt = ImageFont.truetype(opts.font, fontsize)
     color_active = (0, 0, 0)
     color_inactive = (153, 153, 153)
 
