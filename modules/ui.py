@@ -98,7 +98,7 @@ def save_files(js_data, images):
         at_start = file.tell() == 0
         writer = csv.writer(file)
         if at_start:
-            writer.writerow(["prompt", "seed", "width", "height", "sampler", "cfgs", "steps", "filename"])
+            writer.writerow(["prompt", "seed", "width", "height", "sampler", "cfgs", "steps", "filename", "negative_prompt"])
 
         filename_base = str(int(time.time() * 1000))
         for i, filedata in enumerate(images):
@@ -113,7 +113,7 @@ def save_files(js_data, images):
 
             filenames.append(filename)
 
-        writer.writerow([data["prompt"], data["seed"], data["width"], data["height"], data["sampler"], data["cfg_scale"], data["steps"], filenames[0]])
+        writer.writerow([data["prompt"], data["seed"], data["width"], data["height"], data["sampler"], data["cfg_scale"], data["steps"], filenames[0], data["negative_prompt"]])
 
     return '', '', plaintext_to_html(f"Saved: {filenames[0]}")
 
@@ -390,8 +390,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo):
                     switch_mode = gr.Radio(label='Mode', elem_id="img2img_mode", choices=['Redraw whole image', 'Inpaint a part of image', 'Loopback', 'SD upscale'], value='Redraw whole image', type="index", show_label=False)
                     init_img = gr.Image(label="Image for img2img", source="upload", interactive=True, type="pil")
                     init_img_with_mask = gr.Image(label="Image for inpainting with mask", elem_id="img2maskimg", source="upload", interactive=True, type="pil", tool="sketch", visible=False, image_mode="RGBA")
-                    init_img_with_mask_comment = gr.HTML(elem_id="mask_bug_info", value="<small>if the editor shows ERROR, switch to another tab and back, then to another img2img mode above and back</small>", visible=False)
                     init_mask = gr.Image(label="Mask", source="upload", interactive=True, type="pil", visible=False)
+                    init_img_with_mask_comment = gr.HTML(elem_id="mask_bug_info", value="<small>if the editor shows ERROR, switch to another tab and back, then to another img2img mode above and back</small>", visible=False)
 
                     with gr.Row():
                         resize_mode = gr.Radio(label="Resize mode", elem_id="resize_mode", show_label=False, choices=["Just resize", "Crop and resize", "Resize and fill"], type="index", value="Just resize")

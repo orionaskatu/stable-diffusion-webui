@@ -9,7 +9,7 @@ from fonts.ttf import Roboto
 import string
 
 import modules.shared
-from modules import sd_samplers
+from modules import sd_samplers, shared
 from modules.shared import opts
 
 import shlex
@@ -138,7 +138,12 @@ def draw_grid_annotations(im, width, height, hor_texts, ver_texts):
 
     fontsize = (width + height) // 25
     line_spacing = fontsize // 2
-    fnt = ImageFont.truetype(opts.font or Roboto, fontsize)
+
+    try:
+        fnt = ImageFont.truetype(opts.font or Roboto, fontsize)
+    except Exception:
+        fnt = ImageFont.truetype(Roboto, fontsize)
+
     color_active = (0, 0, 0)
     color_inactive = (153, 153, 153)
 
@@ -250,7 +255,7 @@ def sanitize_filename_part(text, replace_spaces=True):
     return text.translate({ord(x): '' for x in invalid_filename_chars})[:128]
 
 
-def save_image(image, path, basename, seed=None, prompt=None, extension='png', info=None, short_filename=False, no_prompt=False, pnginfo_section_name='parameters', p=None):
+def save_image(image, path, basename, seed=None, prompt=None, extension='png', info=None, short_filename=False, no_prompt=False, pnginfo_section_name='parameters', p=None, existing_info=None):
     # would be better to add this as an argument in future, but will do for now
     is_a_grid = basename != ""
 
@@ -261,7 +266,9 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
     else:
         file_decoration = opts.samples_filename_format or "[seed]-[prompt_spaces]"
 
-    file_decoration = "-" + file_decoration.lower()
+    if file_decoration != "":
+        file_decoration = "-" + file_decoration.lower()
+
     if seed is not None:
         file_decoration = file_decoration.replace("[seed]", str(seed))
     if prompt is not None:
@@ -274,8 +281,15 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         file_decoration = file_decoration.replace("[height]", str(p.height))
         file_decoration = file_decoration.replace("[sampler]", sd_samplers.samplers[p.sampler_index].name)
 
+    file_decoration = file_decoration.replace("[model_hash]", shared.sd_model_hash)
+
     if extension == 'png' and opts.enable_pnginfo and info is not None:
         pnginfo = PngImagePlugin.PngInfo()
+
+        if existing_info is not None:
+            for k, v in existing_info.items():
+                pnginfo.add_text(k, v)
+
         pnginfo.add_text(pnginfo_section_name, info)
     else:
         pnginfo = None

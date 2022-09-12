@@ -65,6 +65,7 @@ class Processed:
     def __init__(self, p: StableDiffusionProcessing, images_list, seed, info):
         self.images = images_list
         self.prompt = p.prompt
+        self.negative_prompt = p.negative_prompt
         self.seed = seed
         self.info = info
         self.width = p.width
@@ -76,6 +77,7 @@ class Processed:
     def js(self):
         obj = {
             "prompt": self.prompt if type(self.prompt) != list else self.prompt[0],
+            "negative_prompt": self.negative_prompt if type(self.negative_prompt) != list else self.negative_prompt[0],
             "seed": int(self.seed if type(self.seed) != list else self.seed[0]),
             "width": self.width,
             "height": self.height,
@@ -104,15 +106,14 @@ def create_random_tensors(shape, seeds, subseeds=None, subseed_strength=0.0, see
         subnoise = None
         if subseeds is not None:
             subseed = 0 if i >= len(subseeds) else subseeds[i]
-            torch.manual_seed(subseed)
-            subnoise = torch.randn(noise_shape, device=shared.device)
+
+            subnoise = devices.randn(subseed, noise_shape)
 
         # randn results depend on device; gpu and cpu get different results for same seed;
         # the way I see it, it's better to do this on CPU, so that everyone gets same result;
         # but the original script had it like this, so I do not dare change it for now because
         # it will break everyone's seeds.
-        torch.manual_seed(seed)
-        noise = torch.randn(noise_shape, device=shared.device)
+        noise = devices.randn(seed, noise_shape)
 
         if subnoise is not None:
             #noise = subnoise * subseed_strength + noise * (1 - subseed_strength)
@@ -120,12 +121,8 @@ def create_random_tensors(shape, seeds, subseeds=None, subseed_strength=0.0, see
 
         if noise_shape != shape:
             #noise = torch.nn.functional.interpolate(noise.unsqueeze(1), size=shape[1:], mode="bilinear").squeeze()
-            # noise_shape = (64, 80)
-            # shape = (64, 72)
-
-            torch.manual_seed(seed)
-            x = torch.randn(shape, device=shared.device)
-            dx = (shape[2] - noise_shape[2]) // 2 # -4
+            x = devices.randn(seed, shape)
+            dx = (shape[2] - noise_shape[2]) // 2
             dy = (shape[1] - noise_shape[1]) // 2
             w = noise_shape[2] if dx >= 0 else noise_shape[2] + 2 * dx
             h = noise_shape[1] if dy >= 0 else noise_shape[1] + 2 * dy
@@ -191,6 +188,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
             "Seed": all_seeds[index],
             "Face restoration": (opts.face_restoration_model if p.restore_faces else None),
             "Size": f"{p.width}x{p.height}",
+            "Model hash": (None if not opts.add_model_hash_to_info or not shared.sd_model_hash else shared.sd_model_hash),
             "Batch size": (None if p.batch_size < 2 else p.batch_size),
             "Batch pos": (None if p.batch_size < 2 else position_in_batch),
             "Variation seed": (None if p.subseed_strength == 0 else all_subseeds[index]),
@@ -463,7 +461,7 @@ class StableDiffusionProcessingImg2Img(StableDiffusionProcessing):
         if self.image_mask is not None:
             init_mask = latent_mask
             latmask = init_mask.convert('RGB').resize((self.init_latent.shape[3], self.init_latent.shape[2]))
-            latmask = np.moveaxis(np.array(latmask, dtype=np.float64), 2, 0) / 255
+            latmask = np.moveaxis(np.array(latmask, dtype=np.float32), 2, 0) / 255
             latmask = latmask[0]
             latmask = np.around(latmask)
             latmask = np.tile(latmask[None], (4, 1, 1))
