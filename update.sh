@@ -74,6 +74,13 @@ git fetch --all
 git reset --hard origin/master
 
 printf ${delimiter}
+printf "Update BLIP"
+printf ${delimiter}
+cd "${target}"/diffusion/BLIP/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/BLIP/, aborting...\e[0m"; exit 1; }
+git fetch --all
+git reset --hard origin/main
+
+printf ${delimiter}
 printf "Update stable-diffusion-webui"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion/stable-diffusion-webui || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/stable-diffusion-webui, aborting...\e[0m"; exit 1; }

@@ -70,6 +70,11 @@ printf ${delimiter}
 git clone https://github.com/sczhou/CodeFormer.git
 
 printf ${delimiter}
+printf "Clone BLIP"
+printf ${delimiter}
+git clone https://github.com/salesforce/BLIP.git
+
+printf ${delimiter}
 printf "Clone stable-diffusion-webui"
 printf ${delimiter}
 cd "${target}"/diffusion/stable-diffusion/ || { printf "\x1B[31mERROR: Can't cd to ${target}/diffusion/stable-diffusion/, aborting...\e[0m"; exit 1; }
