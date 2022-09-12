@@ -4,7 +4,7 @@
 
 **I'm not a developer and my code is far from good, so you WILL encounter bugs.**
 
-Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros (it won't work on Windows/MacOS though).
+Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros.
 
 You just need `python3` and the `proprietary nvidia drivers`.
 
@@ -31,10 +31,10 @@ A bash script `install.sh` that:
  - Installs stable-diffusion + WebUI
  - Installs Miniconda and all python dependencies
  - Downloads the sd-v1-4.ckpt model
- - Download the GFPGANv1.3.pth model
+ - Downloads the GFPGANv1.3.pth model
  - Creates a systemd service to easily control stable-diffusion
 
-A bash script `update.sh`that:
+A bash script `update.sh` that:
   - Updates all system packages
   - Updates all github sources
   - Updates all python dependencies
@@ -60,14 +60,14 @@ It converts and compress to jpg if the file is too big for Discord (8MB limit).
 You have to put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
 `https://discord.com/api/webhooks/xxx/xxx`
 
-Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens)
+Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens).
 
 Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.service` and set to start at boot.
 
  ## TODO
 
  Next planned features:
-  - ?
+  - Make a non-customized and more portable version that can be proposed to the original repo
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
