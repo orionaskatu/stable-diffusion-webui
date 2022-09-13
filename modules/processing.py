@@ -24,7 +24,6 @@ opt_C = 4
 opt_f = 8
 
 
-
 class StableDiffusionProcessing:
     def __init__(self, sd_model=None, outpath_samples=None, outpath_grids=None, prompt="", prompt_style="None", seed=-1, subseed=-1, subseed_strength=0, seed_resize_from_h=-1, seed_resize_from_w=-1, sampler_index=0, batch_size=1, n_iter=1, steps=50, cfg_scale=7.0, width=512, height=512, restore_faces=False, tiling=False, do_not_save_samples=False, do_not_save_grid=False, extra_generation_params=None, overlay_images=None, negative_prompt=None):
         self.sd_model = sd_model
@@ -247,6 +246,10 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
 
             x_samples_ddim = p.sd_model.decode_first_stage(samples_ddim)
             x_samples_ddim = torch.clamp((x_samples_ddim + 1.0) / 2.0, min=0.0, max=1.0)
+
+            if opts.filter_nsfw:
+                import modules.safety as safety
+                x_samples_ddim = modules.safety.censor_batch(x_samples_ddim)
 
             for i, x_sample in enumerate(x_samples_ddim):
                 x_sample = 255. * np.moveaxis(x_sample.cpu().numpy(), 0, 2)
