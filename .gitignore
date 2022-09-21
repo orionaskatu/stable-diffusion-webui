@@ -1,6 +1,7 @@
 __pycache__
 /ESRGAN
 /model.ckpt
+/models/*.ckpt
 /GFPGANv1.3.pth
 /outputs
 /log
@@ -9,7 +10,9 @@ __pycache__
 /styles.csv
 /styles.csv.bak
 /webui-user.bat
+/webui-user.sh
 /interrogate
+/user.css
 /discordurl.txt
 /test.py
 /target

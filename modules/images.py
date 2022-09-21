@@ -5,13 +5,15 @@ from collections import namedtuple
 import re
 
 import numpy as np
+import piexif
+import piexif.helper
 from PIL import Image, ImageFont, ImageDraw, PngImagePlugin
 from fonts.ttf import Roboto
 import string
 
 import modules.shared
 from modules import sd_samplers, shared
-from modules.shared import opts
+from modules.shared import opts, cmd_opts
 
 import shlex
 from shlex import join
@@ -246,45 +248,73 @@ def resize_image(resize_mode, im, width, height):
 
 
 invalid_filename_chars = '<>:"/\\|?*\n'
+invalid_filename_prefix = ' '
+invalid_filename_postfix = ' .'
 re_nonletters = re.compile(r'[\s'+string.punctuation+']+')
+max_filename_part_length = 128
+max_prompt_words = 8
 
 
 def sanitize_filename_part(text, replace_spaces=True):
     if replace_spaces:
         text = text.replace(' ', '_')
 
-    return text.translate({ord(x): '' for x in invalid_filename_chars})[:128]
+    text = text.translate({ord(x): '_' for x in invalid_filename_chars})
+    text = text.lstrip(invalid_filename_prefix)[:max_filename_part_length]
+    text = text.rstrip(invalid_filename_postfix)
+    return text
 
 
 def apply_filename_pattern(x, p, seed, prompt):
     if seed is not None:
         x = x.replace("[seed]", str(seed))
+
     if prompt is not None:
-        x = x.replace("[prompt]", sanitize_filename_part(prompt)[:128])
-        x = x.replace("[prompt_spaces]", sanitize_filename_part(prompt, replace_spaces=False)[:128])
+        x = x.replace("[prompt]", sanitize_filename_part(prompt))
+        x = x.replace("[prompt_spaces]", sanitize_filename_part(prompt, replace_spaces=False))
         if "[prompt_words]" in x:
             words = [x for x in re_nonletters.split(prompt or "") if len(x) > 0]
             if len(words) == 0:
                 words = ["empty"]
+            x = x.replace("[prompt_words]", sanitize_filename_part(" ".join(words[0:max_prompt_words]), replace_spaces=False))
 
-            x = x.replace("[prompt_words]", " ".join(words[0:8]).strip())
     if p is not None:
         x = x.replace("[steps]", str(p.steps))
         x = x.replace("[cfg]", str(p.cfg_scale))
         x = x.replace("[width]", str(p.width))
         x = x.replace("[height]", str(p.height))
-        x = x.replace("[sampler]", sd_samplers.samplers[p.sampler_index].name)
+        x = x.replace("[sampler]", sanitize_filename_part(sd_samplers.samplers[p.sampler_index].name, replace_spaces=False))
 
-    x = x.replace("[model_hash]", shared.sd_model_hash)
+    x = x.replace("[model_hash]", shared.sd_model.sd_model_hash)
     x = x.replace("[date]", datetime.date.today().isoformat())
+
+    if cmd_opts.hide_ui_dir_config:
+        x = re.sub(r'^[\\/]+|\.{2,}[\\/]+|[\\/]+\.{2,}', '', x)
 
     return x
 
+def get_next_sequence_number(path, basename):
+    """
+    Determines and returns the next sequence number to use when saving an image in the specified directory.
 
-def save_image(image, path, basename, seed=None, prompt=None, extension='png', info=None, short_filename=False, no_prompt=False, pnginfo_section_name='parameters', p=None, existing_info=None):
-    # would be better to add this as an argument in future, but will do for now
-    is_a_grid = basename != ""
+    The sequence starts at 0.
+    """
+    result = -1
+    if basename != '':
+        basename = basename + "-"
 
+    prefix_length = len(basename)
+    for p in os.listdir(path):
+        if p.startswith(basename):
+            l = os.path.splitext(p[prefix_length:])[0].split('-') #splits the filename (removing the basename first if one is defined, so the sequence number is always the first element)
+            try:
+                result = max(int(l[0]), result)
+            except ValueError:
+                pass
+
+    return result + 1
+
+def save_image(image, path, basename, seed=None, prompt=None, extension='png', info=None, short_filename=False, no_prompt=False, grid=False, pnginfo_section_name='parameters', p=None, existing_info=None, forced_filename=None):
     if short_filename or prompt is None or seed is None:
         file_decoration = ""
     elif opts.save_to_dirs:
@@ -308,7 +338,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
     else:
         pnginfo = None
 
-    save_to_dirs = (is_a_grid and opts.grid_save_to_dirs) or (not is_a_grid and opts.save_to_dirs)
+    save_to_dirs = (grid and opts.grid_save_to_dirs) or (not grid and opts.save_to_dirs and not no_prompt)
 
     if save_to_dirs:
         dirname = apply_filename_pattern(opts.directories_filename_pattern or "[prompt_words]", p, seed, prompt)
@@ -316,17 +346,33 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
 
     os.makedirs(path, exist_ok=True)
 
-    filecount = len([x for x in os.listdir(path) if os.path.splitext(x)[1] == '.' + extension])
-    fullfn = "a.png"
-    fullfn_without_extension = "a"
-    for i in range(500):
-        fn = f"{filecount+i:05}" if basename == '' else f"{basename}-{filecount+i:04}"
-        fullfn = os.path.join(path, f"{fn}{file_decoration}.{extension}")
-        fullfn_without_extension = os.path.join(path, f"{fn}{file_decoration}")
-        if not os.path.exists(fullfn):
-            break
+    if forced_filename is None:
+        basecount = get_next_sequence_number(path, basename)
+        fullfn = "a.png"
+        fullfn_without_extension = "a"
+        for i in range(500):
+            fn = f"{basecount+i:05}" if basename == '' else f"{basename}-{basecount+i:04}"
+            fullfn = os.path.join(path, f"{fn}{file_decoration}.{extension}")
+            fullfn_without_extension = os.path.join(path, f"{fn}{file_decoration}")
+            if not os.path.exists(fullfn):
+                break
+    else:
+        fullfn = os.path.join(path, f"{forced_filename}.{extension}")
+        fullfn_without_extension = os.path.join(path, forced_filename)
 
-    image.save(fullfn, quality=opts.jpeg_quality, pnginfo=pnginfo)
+    def exif_bytes():
+        return piexif.dump({
+            "Exif": {
+                piexif.ExifIFD.UserComment: piexif.helper.UserComment.dump(info or "", encoding="unicode")
+            },
+        })
+
+    if extension.lower() in ("jpg", "jpeg", "webp"):
+        image.save(fullfn, quality=opts.jpeg_quality)
+        if opts.enable_pnginfo and info is not None:
+            piexif.insert(exif_bytes(), fullfn)
+    else:
+        image.save(fullfn, quality=opts.jpeg_quality, pnginfo=pnginfo)
 
     target_side_length = 4000
     oversize = image.width > target_side_length or image.height > target_side_length
@@ -338,7 +384,9 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         elif oversize:
             image = image.resize((image.width * target_side_length // image.height, target_side_length), LANCZOS)
 
-        image.save(f"{fullfn_without_extension}.jpg", quality=opts.jpeg_quality, pnginfo=pnginfo)
+        image.save(fullfn_without_extension + ".jpg", quality=opts.jpeg_quality)
+        if opts.enable_pnginfo and info is not None:
+            piexif.insert(exif_bytes(), fullfn_without_extension + ".jpg")
 
     if opts.save_txt and info is not None:
         with open(f"{fullfn_without_extension}.txt", "w", encoding="utf8") as file:
