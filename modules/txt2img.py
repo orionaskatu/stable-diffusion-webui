@@ -44,4 +44,3 @@ def txt2img(prompt: str, negative_prompt: str, prompt_style: str, prompt_style2:
     shared.total_tqdm.clear()
 
     return processed.images, processed.js(), plaintext_to_html(processed.info)
-

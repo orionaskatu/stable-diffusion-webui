@@ -15,6 +15,9 @@ import modules.shared
 from modules import sd_samplers, shared
 from modules.shared import opts, cmd_opts
 
+import shlex
+from shlex import join
+
 LANCZOS = (Image.Resampling.LANCZOS if hasattr(Image, 'Resampling') else Image.LANCZOS)
 
 
@@ -389,6 +392,7 @@ def save_image(image, path, basename, seed=None, prompt=None, extension='png', i
         with open(f"{fullfn_without_extension}.txt", "w", encoding="utf8") as file:
             file.write(info + "\n")
 
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', info, fullfn]))
 
 class Upscaler:
     name = "Lanczos"
