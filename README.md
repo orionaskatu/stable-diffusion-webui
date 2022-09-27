@@ -8,48 +8,33 @@ Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros.
 
 You just need `python3` and the `proprietary nvidia drivers`.
 
-For installation and reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
+For reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
 ```commmandline
 username   ALL=(ALL) NOPASSWD: ALL
 ```
 
 Easy install script:
-`bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/install.sh)`
+`bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/webui.sh)`
 
 
-The default installation directory for stable-diffusion is `/home/$username/diffusion`.
+The default installation directory for stable-diffusion is `/home/$(whoami)/stable-diffusion-webui`.
 
-Miniconda will be installed in `/home/$username/miniconda`.
+The python venv will be installed in `/home/$(whoami)/stable-diffusion-webui/venv`.
 
-If you want to install stable-diffusion somewhere else, just put the path in parameter (without trailing slash) like: `bash install.sh /opt`, it will be installed in a subdirectory named `diffusion`.
+If you want to install stable-diffusion somewhere else, you need to clone the repo and change the parameters in `webui-user.sh`.
 
 
 ## Features
 
-A bash script `install.sh` that:
- - Installs all system dependencies
- - Installs stable-diffusion + WebUI
- - Installs Miniconda and all python dependencies
- - Downloads the sd-v1-4.ckpt model
- - Downloads the GFPGANv1.3.pth model
- - Creates a systemd service to easily control stable-diffusion
-
-A bash script `update.sh` that:
-  - Updates all system packages
-  - Updates all github sources
-  - Updates all python dependencies
-
 A bash script `start.sh` that:
- - Activates `ldm` conda env
  - Launches a reverse proxy on port 80 to easily access the webui from the local network
- - Launches `webui.py` with these params: `--no-progressbar-hiding --max-batch-count 30 --medvram --opt-split-attention --allow-code`
+ - Launches `webui.sh`
 
 A System tab with buttons to:
  - Read the last 20 lines of `journalctl -u stable-diffusion`
  - Print `nvidia-smi` output
  - Purge `outputs` directory
- - Update stable-diffusion and the WebUI
- - Restart the WebUI (useful in case of OOM)
+ - Restart the WebUI (to update and in case of OOM)
  - Power off the system
 
 A bash script `discord.sh` to send generation infos + images to discord via webhook.
@@ -67,7 +52,7 @@ Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.servic
  ## TODO
 
  Next planned features:
-  - Make a non-customized and more portable version that can be proposed to the original repo
+  - 
 
 
 ↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
