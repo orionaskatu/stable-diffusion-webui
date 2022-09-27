@@ -91,7 +91,7 @@ def webui():
         run_modelmerger=modules.extras.run_modelmerger
     )
 
-    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
+    os.system(shlex.join(['bash', 'discord.sh', 'The stable-diffusion server is available!', 'images/available.png']))
     demo.queue(concurrency_count=1)
     demo.launch(
         share=cmd_opts.share,

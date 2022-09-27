@@ -993,23 +993,18 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
         purge_outputs = os.system('rm -rf outputs/*')
         return purge_outputs
 
-    def UpdateWebui():
-        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is updating!', 'stable-diffusion-webui/images/update.png']))
-        updateui = os.system('wget https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/update.sh -O update.sh &&  echo "bash update.sh $(cat stable-diffusion-webui/target) > stable-diffusion-webui/update.log 2>&1" | at now')
-        return updateui
-
     def Readupdatelog():
-        with open('stable-diffusion-webui/update.log', 'r') as updatelogfile:
+        with open('update.log', 'r') as updatelogfile:
             updatelogcontent = updatelogfile.read()
             return updatelogcontent
 
     def ExitWebui():
-        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
+        os.system(shlex.join(['bash', 'discord.sh', 'The stable-diffusion server is rebooting!', 'images/reboot.png']))
         restartui = os.system('sudo systemctl restart stable-diffusion')
         return restartui
 
     def Shutdown():
-        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is shutting down!', 'stable-diffusion-webui/images/shutdown.png']))
+        os.system(shlex.join(['bash', 'discord.sh', 'The stable-diffusion server is shutting down!', 'images/shutdown.png']))
         shutdown = os.system('sudo systemctl poweroff')
         return shutdown
 
@@ -1029,9 +1024,6 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
             with gr.Column():
                 purge_btn = gr.Button("Purge Outputs Directory", variant="primary")
                 purge_btn.click(PurgeOutputs, [], [])
-            with gr.Column():
-                exit_btn = gr.Button("Update WebUI", variant="primary")
-                exit_btn.click(UpdateWebui, [], [])
             with gr.Column():
                 exit_btn = gr.Button("Restart WebUI", variant="primary")
                 exit_btn.click(ExitWebui, [], [])
