@@ -106,7 +106,7 @@ then
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
     "${GIT}" pull
 else
-    "${GIT}" clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git "${clone_dir}"
+    "${GIT}" clone https://github.com/orionaskatu/stable-diffusion-webui.git "${clone_dir}"
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
 fi
 
@@ -117,7 +117,6 @@ cd "${install_dir}"/"${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %
 if [[ ! -d "${venv_dir}" ]]
 then
     "${python_cmd}" -m venv "${venv_dir}"
-    first_launch=1
 fi
 # shellcheck source=/dev/null
 if [[ -f "${venv_dir}"/bin/activate ]]
@@ -133,4 +132,4 @@ fi
 printf "\n%s\n" "${delimiter}"
 printf "Launching launch.py..."
 printf "\n%s\n" "${delimiter}"
-"${python_cmd}" launch.py
+"${python_cmd}" -u launch.py
