@@ -23,6 +23,8 @@ import modules.img2img
 import modules.swinir as swinir
 import modules.sd_models
 
+import shlex
+from shlex import join
 
 modules.codeformer_model.setup_codeformer()
 modules.gfpgan_model.setup_gfpgan()
@@ -89,6 +91,8 @@ def webui():
         run_modelmerger=modules.extras.run_modelmerger
     )
 
+    os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is available!', 'stable-diffusion-webui/images/available.png']))
+    demo.queue(concurrency_count=1)
     demo.launch(
         share=cmd_opts.share,
         server_name="0.0.0.0" if cmd_opts.listen else None,

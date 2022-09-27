@@ -29,6 +29,11 @@ import modules.codeformer_model
 import modules.styles
 import modules.generation_parameters_copypaste
 
+import subprocess
+
+import shlex
+from shlex import join
+
 # this is a fix for Windows users. Without it, javascript files will be served with text/html content-type and the bowser will not show any UI
 mimetypes.init()
 mimetypes.add_type('application/javascript', '.js')
@@ -452,7 +457,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
 
                 with gr.Group():
                     html_info = gr.HTML()
-                    generation_info = gr.Textbox(visible=False)
+                    generation_info = gr.Textbox(show_label=False)
 
             connect_reuse_seed(seed, reuse_seed, generation_info, dummy_component, is_subseed=False)
             connect_reuse_seed(subseed, reuse_subseed, generation_info, dummy_component, is_subseed=True)
@@ -486,6 +491,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
                     html_info
                 ],
                 show_progress=False,
+                scroll_to_output=True
             )
 
             txt2img_prompt.submit(**txt2img_args)
@@ -628,7 +634,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
 
                 with gr.Group():
                     html_info = gr.HTML()
-                    generation_info = gr.Textbox(visible=False)
+                    generation_info = gr.Textbox(show_label=False)
 
             connect_reuse_seed(seed, reuse_seed, generation_info, dummy_component, is_subseed=False)
             connect_reuse_seed(subseed, reuse_subseed, generation_info, dummy_component, is_subseed=True)
@@ -688,6 +694,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
                     html_info
                 ],
                 show_progress=False,
+                scroll_to_output=True
             )
 
             img2img_prompt.submit(**img2img_args)
@@ -817,7 +824,8 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
                 result_images,
                 html_info_x,
                 html_info,
-            ]
+            ],
+            scroll_to_output=True
         )
      
         extras_send_to_img2img.click(
@@ -973,6 +981,64 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
         if column is not None:
             column.__exit__()
 
+    def Readlog():
+        logfile = subprocess.check_output('journalctl -q -u stable-diffusion | tail -20', shell=True).decode()
+        return logfile
+
+    def Nvidiasmi():
+        nvidia_smi = subprocess.check_output('nvidia-smi', shell=True).decode()
+        return nvidia_smi
+
+    def PurgeOutputs():
+        purge_outputs = os.system('rm -rf outputs/*')
+        return purge_outputs
+
+    def UpdateWebui():
+        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is updating!', 'stable-diffusion-webui/images/update.png']))
+        updateui = os.system('wget https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/update.sh -O update.sh &&  echo "bash update.sh $(cat stable-diffusion-webui/target) > stable-diffusion-webui/update.log 2>&1" | at now')
+        return updateui
+
+    def Readupdatelog():
+        with open('stable-diffusion-webui/update.log', 'r') as updatelogfile:
+            updatelogcontent = updatelogfile.read()
+            return updatelogcontent
+
+    def ExitWebui():
+        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is rebooting!', 'stable-diffusion-webui/images/reboot.png']))
+        restartui = os.system('sudo systemctl restart stable-diffusion')
+        return restartui
+
+    def Shutdown():
+        os.system(shlex.join(['bash', 'stable-diffusion-webui/discord.sh', 'The stable-diffusion server is shutting down!', 'stable-diffusion-webui/images/shutdown.png']))
+        shutdown = os.system('sudo systemctl poweroff')
+        return shutdown
+
+    with gr.Blocks(analytics_enabled=False) as system_interface:
+        with gr.Row().style(equal_height=False):
+            with gr.Column():
+                logfile_out = gr.Textbox(label="Logs", lines=20)
+                logfile_btn = gr.Button("Refresh journalctl")
+                logfile_btn.click(Readlog, [], logfile_out, queue=False)
+                updatelogfile_btn = gr.Button("Read update.log")
+                updatelogfile_btn.click(Readupdatelog, [], logfile_out, queue=False)
+            with gr.Column():
+                nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
+                nvidia_smi_btn = gr.Button("Nvidia-smi")
+                nvidia_smi_btn.click(Nvidiasmi, [], nvidia_smi_out, queue=False)
+        with gr.Row():
+            with gr.Column():
+                purge_btn = gr.Button("Purge Outputs Directory", variant="primary")
+                purge_btn.click(PurgeOutputs, [], [])
+            with gr.Column():
+                exit_btn = gr.Button("Update WebUI", variant="primary")
+                exit_btn.click(UpdateWebui, [], [])
+            with gr.Column():
+                exit_btn = gr.Button("Restart WebUI", variant="primary")
+                exit_btn.click(ExitWebui, [], [])
+            with gr.Column():
+                exit_btn = gr.Button("Shutdown System", variant="primary")
+                exit_btn.click(Shutdown, [], [])
+
     interfaces = [
         (txt2img_interface, "txt2img", "txt2img"),
         (img2img_interface, "img2img", "img2img"),
@@ -980,6 +1046,7 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
         (pnginfo_interface, "PNG Info", "pnginfo"),
         (modelmerger_interface, "Checkpoint Merger", "modelmerger"),
         (settings_interface, "Settings", "settings"),
+        (system_interface, "System", "system"),
     ]
 
     with open(os.path.join(script_path, "style.css"), "r", encoding="utf8") as file:

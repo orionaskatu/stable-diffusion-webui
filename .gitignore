@@ -1,15 +1,11 @@
 __pycache__
 /ESRGAN
-/repositories
-/venv
-/tmp
 /model.ckpt
 /models/*.ckpt
 /GFPGANv1.3.pth
 /gfpgan/weights/*.pth
 /ui-config.json
 /outputs
-/config.json
 /log
 /webui.settings.bat
 /embeddings
@@ -22,3 +18,7 @@ __pycache__
 /.idea
 notification.mp3
 /SwinIR
+/discordurl.txt
+/test.py
+/target
+/update.log
