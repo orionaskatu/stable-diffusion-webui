@@ -993,11 +993,6 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
         purge_outputs = os.system('rm -rf outputs/*')
         return purge_outputs
 
-    def Readupdatelog():
-        with open('update.log', 'r') as updatelogfile:
-            updatelogcontent = updatelogfile.read()
-            return updatelogcontent
-
     def ExitWebui():
         os.system(shlex.join(['bash', 'discord.sh', 'The stable-diffusion server is rebooting!', 'images/reboot.png']))
         restartui = os.system('sudo systemctl restart stable-diffusion')
@@ -1014,8 +1009,6 @@ def create_ui(txt2img, img2img, run_extras, run_pnginfo, run_modelmerger):
                 logfile_out = gr.Textbox(label="Logs", lines=20)
                 logfile_btn = gr.Button("Refresh journalctl")
                 logfile_btn.click(Readlog, [], logfile_out, queue=False)
-                updatelogfile_btn = gr.Button("Read update.log")
-                updatelogfile_btn.click(Readupdatelog, [], logfile_out, queue=False)
             with gr.Column():
                 nvidia_smi_out = gr.Textbox(label="Nvidia-smi", lines=20)
                 nvidia_smi_btn = gr.Button("Nvidia-smi")
