@@ -1,9 +1,5 @@
 # Prequisites
 
-**It is NOT SAFE to expose this implementation of the Web UI outside your local network (mainly because of passwordless sudo).**
-
-**I'm not a developer and my code is far from good, so you WILL encounter bugs.**
-
 Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros.
 
 You just need `python3` and the `proprietary nvidia drivers`.
@@ -21,7 +17,9 @@ The default installation directory for stable-diffusion is `/home/$(whoami)/stab
 
 The python venv will be installed in `/home/$(whoami)/stable-diffusion-webui/venv`.
 
-If you want to install stable-diffusion somewhere else, you need to clone the repo and change the parameters in `webui-user.sh`.
+If you want to install stable-diffusion or venv somewhere else, you need to clone the repo and change the parameters in `webui-user.sh`.
+
+If you want to use the reverse proxy on port 80 and the systemd service, you need to clobne the repo and launch `install.sh`.
 
 
 ## Features
@@ -38,7 +36,7 @@ A System tab with buttons to:
  - Power off the system
 
 A bash script `discord.sh` to send generation infos + images to discord via webhook.
-It also sends status changes on start/update/reboot/stop.
+It also sends status changes on start/reboot/stop.
 
 It converts and compress to jpg if the file is too big for Discord (8MB limit).
 
