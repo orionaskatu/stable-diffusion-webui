@@ -1,3 +1,64 @@
+# Prequisites
+
+Tested on Debian 11 (Bullseye), it may need adjustments for other Linux distros.
+
+You just need `python3` and the `proprietary nvidia drivers`.
+
+For reverse proxy on port 80 you need to sudo without password (in `/etc/sudoers.d/username`):
+```commmandline
+username   ALL=(ALL) NOPASSWD: ALL
+```
+
+Easy install script:
+`bash <(wget -qO- https://raw.githubusercontent.com/orionaskatu/stable-diffusion-webui/master/webui.sh)`
+
+
+The default installation directory for stable-diffusion is `/home/$(whoami)/stable-diffusion-webui`.
+
+The python venv will be installed in `/home/$(whoami)/stable-diffusion-webui/venv`.
+
+If you want to install stable-diffusion or venv somewhere else, you need to clone the repo and change the parameters in `webui-user.sh`.
+
+If you want to use the reverse proxy on port 80 and the systemd service, you need to clobne the repo and launch `install.sh`.
+
+
+## Features
+
+A bash script `start.sh` that:
+ - Launches a reverse proxy on port 80 to easily access the webui from the local network
+ - Launches `webui.sh`
+
+A System tab with buttons to:
+ - Read the last 20 lines of `journalctl -u stable-diffusion`
+ - Print `nvidia-smi` output
+ - Purge `outputs` directory
+ - Restart the WebUI (to update and in case of OOM)
+ - Power off the system
+
+A bash script `discord.sh` to send generation infos + images to discord via webhook.
+It also sends status changes on start/reboot/stop.
+
+It converts and compress to jpg if the file is too big for Discord (8MB limit).
+
+You have to put your Discord webhook url in a `discordurl.txt` file in the same directory as the `discord.sh` file :
+`https://discord.com/api/webhooks/xxx/xxx`
+
+Scrolls to output after clicking on `Generate` buttons (useful for mobile usage or small screens).
+
+Start/stop is controlled by systemd `/etc/systemd/system/stable-diffusion.service` and set to start at boot.
+
+ ## TODO
+
+ Next planned features:
+  - 
+
+
+↓↓↓↓ ORIGINAL README BELOW ↓↓↓↓
+
+---
+---
+
+
 # Stable Diffusion web UI
 A browser interface based on Gradio library for Stable Diffusion.
 

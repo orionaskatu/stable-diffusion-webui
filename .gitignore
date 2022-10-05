@@ -12,7 +12,6 @@ __pycache__
 /gfpgan/weights/*.pth
 /ui-config.json
 /outputs
-/config.json
 /log
 /webui.settings.bat
 /embeddings
@@ -26,3 +25,5 @@ __pycache__
 notification.mp3
 /SwinIR
 /textual_inversion
+/discordurl.txt
+/test.py

@@ -1,0 +1,15 @@
+[Unit]
+Description=Stable-Diffusion
+After=network-online.target
+
+[Service]
+Type=simple
+
+User=username
+Group=username
+ExecStart=sdtarget/stable-diffusion-webui/start.sh
+WorkingDirectory=sdarget/stable-diffusion-webui/
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

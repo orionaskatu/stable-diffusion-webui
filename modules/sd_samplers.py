@@ -329,4 +329,3 @@ class KDiffusionSampler:
             extra_params_kwargs['sigmas'] = sigmas
         samples = self.func(self.model_wrap_cfg, x, extra_args={'cond': conditioning, 'uncond': unconditional_conditioning, 'cond_scale': p.cfg_scale}, disable=False, callback=self.callback_state, **extra_params_kwargs)
         return samples
-

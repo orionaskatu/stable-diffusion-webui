@@ -27,6 +27,9 @@ from modules import modelloader
 from modules.paths import script_path
 from modules.shared import cmd_opts
 
+import shlex
+from shlex import join
+
 modelloader.cleanup_models()
 modules.sd_models.setup_model()
 codeformer.setup_model(cmd_opts.codeformer_models_path)
@@ -91,6 +94,8 @@ def webui():
 
         demo = modules.ui.create_ui(wrap_gradio_gpu_call=wrap_gradio_gpu_call)
         
+        os.system(shlex.join(['bash', 'discord.sh', 'The stable-diffusion server is available!', 'images/available.png']))
+        demo.queue(concurrency_count=1)
         demo.launch(
             share=cmd_opts.share,
             server_name="0.0.0.0" if cmd_opts.listen else None,
